@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEVA Initiative — La communauté Star Wars: Unlimited</title>
+  <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+    
+    <!-- Calendrier Central & Tournois à venir -->
+    <section class="space-y-10">
+      
+    <!-- En-tête de page -->
+      <div class="text-center space-y-4 max-w-2xl mx-auto flex flex-col items-center">
+        <img src="./assets/images/meva_initiative_logo_logo.png" alt="MEVA Initiative" class="h-44 md:h-60 w-auto object-contain drop-shadow-2xl">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          La communauté <span class="text-meva-accent">Star Wars: Unlimited</span>
+        </h1>
+        <p class="text-meva-textMuted text-sm md:text-base">
+          Consultez le calendrier des ligues. Sélectionnez une date ou une boutique pour filtrer les événements à venir.
+        </p>
+      </div>
+      
+      <!-- Zone Calendrier + Légende côte à côte -->
+      <div id="calendar-section" class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto items-start">
+        
+        <!-- Widget Calendrier (À gauche) -->
+        <div class="lg:col-span-8 bg-meva-surface border border-meva-border p-6 md:p-8 rounded-2xl chamfered-card space-y-6 shadow-xl shadow-black/40 w-full">
+          <div class="flex items-center justify-between border-b border-meva-border/50 pb-4">
+            <button id="home-prev-month" type="button" class="text-meva-textMuted hover:text-white p-2 text-lg font-bold transition-transform hover:scale-110">‹</button>
+            <span id="home-calendar-title" class="text-base md:text-lg font-bold text-white tracking-widest uppercase"></span>
+            <button id="home-next-month" type="button" class="text-meva-textMuted hover:text-white p-2 text-lg font-bold transition-transform hover:scale-110">›</button>
+          </div>
+
+          <div class="grid grid-cols-7 text-center text-xs md:text-sm font-semibold text-meva-textMuted pb-2">
+            <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          </div>
+
+          <div id="home-calendar-days" class="grid grid-cols-7 gap-2 md:gap-3 text-center text-sm md:text-base"></div>
+        </div>
+
+        <!-- Légende des Boutiques (À droite) -->
+        <div class="lg:col-span-4 bg-meva-surface/40 border border-meva-border/50 p-6 rounded-2xl w-full h-full flex flex-col shadow-inner">
+          <h3 class="text-xs font-bold text-meva-textMuted uppercase tracking-wider mb-4 text-center lg:text-left">Filtrer par organisateur</h3>
+          <!-- Grille : 2 colonnes sur téléphone, 1 colonne sur ordi -->
+          <div id="home-store-legend" class="grid grid-cols-2 lg:grid-cols-1 gap-3 w-full"></div>
+        </div>
+
+      </div>
+
+      <!-- Grille des tournois fusionnée avec le calendrier -->
+      <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6"></div>
+      
+      <div class="text-center pt-4">
+        <a href="./calendrier.html" class="text-xs md:text-sm font-medium text-meva-accent hover:underline">Accéder à la vue liste détaillée du calendrier →</a>
+      </div>
+
+    </section>
+
+    <!-- Boutiques Partenaires -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between border-t border-meva-border/50 pt-10">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-meva-accent"></span>Nos boutiques partenaires</h2>
+          <p class="text-xs text-meva-textMuted mt-1">Les lieux qui font vivre la communauté.</p>
+        </div>
+        <a href="./boutiques.html" class="text-xs font-medium text-meva-accent hover:underline hidden sm:block">Voir les boutiques →</a>
+      </div>
+      <div id="stores-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      <a href="./boutiques.html" class="text-xs font-medium text-meva-accent hover:underline sm:hidden block text-center mt-4">Voir les boutiques →</a>
+    </section>
+
+    <!-- Actualités -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between border-t border-meva-border/50 pt-10">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-meva-accent"></span>Actualités</h2>
+          <p class="text-xs text-meva-textMuted mt-1">Toute l'actualité de l'association.</p>
+        </div>
+        <a href="./actualites.html" class="text-xs font-medium text-meva-accent hover:underline hidden sm:block">Toutes les actualités →</a>
+      </div>
+      <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      <a href="./actualites.html" class="text-xs font-medium text-meva-accent hover:underline sm:hidden block text-center mt-4">Toutes les actualités →</a>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-meva-border bg-meva-surface/50 mt-12 py-8 text-xs text-meva-textMuted">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      
+      <!-- Copyright & Liens -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p>© 2026 MEVA Initiative. Tous droits réservés.</p>
+        <div class="flex gap-6">
+          <a href="mailto:mevainitiative@gmail.com" class="hover:text-meva-textMain transition-colors">Contact</a>
+          <a href="./association.html" class="hover:text-meva-textMain transition-colors">Mentions légales</a>
+          <a href="./association.html" class="hover:text-meva-textMain transition-colors">Adhésion HelloAsso</a>
+        </div>
+      </div>
+
+      <!-- Clause légale Star Wars / Non-affiliation -->
+      <p class="text-[10px] text-meva-textMuted/60 text-center md:text-left leading-relaxed border-t border-meva-border/30 pt-3">
+        MEVA Initiative est une association loi 1901 à but non lucratif, indépendante et sans affiliation avec Lucasfilm Ltd., The Walt Disney Company ou Fantasy Flight Games. <em>Star Wars</em> et l'ensemble des éléments associés sont des marques déposées de leurs ayants droit respectifs.
+      </p>
+
+    </div>
+  </footer>
+
+  <script type="module">
+    import { getEvents, getNews, getStores } from "./store.js";
+    import { db, auth } from "./firebase-config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Gestion Auth
+    const authBtn = document.getElementById("nav-auth-btn");
+    const adminBtn = document.getElementById("nav-admin-btn");
+    const mobileAuthBtn = document.getElementById("mobile-auth-btn");
+    const mobileAdminBtn = document.getElementById("mobile-admin-btn");
+    const memberBadge = document.getElementById("nav-member-badge");
+    const mobileMemberBadge = document.getElementById("mobile-member-badge");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        if (authBtn) {
+          authBtn.querySelector('span').textContent = "Profil";
+          authBtn.href = "./profil.html";
+        }
+        if (mobileAuthBtn) {
+          mobileAuthBtn.querySelector('span').textContent = "Profil";
+          mobileAuthBtn.href = "./profil.html";
+        }
+        try {
+          const snap = await getDoc(doc(db, "users", user.uid));
+          if (snap.exists()) {
+            const data = snap.data();
+            if (data.roles?.member === true) {
+              if (memberBadge) memberBadge.classList.remove("hidden");
+              if (mobileMemberBadge) mobileMemberBadge.classList.remove("hidden");
+            } else {
+              if (memberBadge) memberBadge.classList.add("hidden");
+              if (mobileMemberBadge) mobileMemberBadge.classList.add("hidden");
+            }
+            if (data.roles?.admin === true) {
+              if (adminBtn) adminBtn.classList.remove("hidden");
+              if (mobileAdminBtn) mobileAdminBtn.classList.remove("hidden");
+            }
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        if (authBtn) {
+          authBtn.querySelector('span').textContent = "Connexion";
+          authBtn.href = "./connexion.html";
+        }
+        if (mobileAuthBtn) {
+          mobileAuthBtn.querySelector('span').textContent = "Connexion";
+          mobileAuthBtn.href = "./connexion.html";
+        }
+        if (memberBadge) memberBadge.classList.add("hidden");
+        if (mobileMemberBadge) mobileMemberBadge.classList.add("hidden");
+        if (adminBtn) adminBtn.classList.add("hidden");
+        if (mobileAdminBtn) mobileAdminBtn.classList.add("hidden");
+      }
+    });
+
+    // --- LOGIQUE CALENDRIER ACCUEIL ---
+    const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+    let displayedMonth = new Date(2026, 10, 1);
+
+    let cachedStores = [];
+
+    function getStoreHexColor(locationName) {
+      const loc = (locationName || "").toLowerCase().trim();
+      
+      if (loc.includes("meva")) return "#8B5CF6"; 
+
+      const matched = cachedStores.find(s => (s.name || "").toLowerCase().trim() === loc);
+      if (matched && matched.color) return matched.color;
+
+      if (loc.includes("idunn") || loc.includes("trésors") || loc.includes("tresors")) return "#F59E0B";
+      if (loc.includes("souko")) return "#10B981";
+      if (loc.includes("mondes") || loc.includes("fantastiques")) return "#EF4444";
+      
+      return "#8B5CF6";
+    }
+
+    function getEventDate(evt) {
+      const value = evt.startDate || evt.date;
+      if (!value) return null;
+      if (typeof value.toDate === "function") return value.toDate();
+      if (value instanceof Date) return value;
+      if (typeof value === "string") {
+        const iso = value.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+        const french = value.toLowerCase().match(/(\d{1,2})\s+([a-zéûôîàù]+)\.?\s+(\d{4})/i);
+        if (french) {
+          const monthIndex = {
+            janv: 0, jan: 0, janvier: 0,
+            fevr: 1, fev: 1, févr: 1, fév: 1, février: 1, fevrier: 1,
+            mars: 2, mar: 2, avril: 3, avr: 3, mai: 4,
+            juin: 5, jui: 5, juil: 6, juillet: 6,
+            aout: 7, août: 7, aou: 7, sept: 8, sep: 8, septembre: 8,
+            oct: 9, octobre: 9, nov: 10, novembre: 10,
+            dec: 11, déc: 11, decembre: 11, décembre: 11
+          }[french[2].replace(".", "")];
+          if (monthIndex !== undefined) return new Date(Number(french[3]), monthIndex, Number(french[1]));
+        }
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+      }
+      return null;
+    }
+
+    function dateKey(date) {
+      if (!date || Number.isNaN(date.getTime())) return null;
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    }
+
+    function renderHomeCalendar(events) {
+      const title = document.getElementById("home-calendar-title");
+      const daysContainer = document.getElementById("home-calendar-days");
+      if(!title || !daysContainer) return;
+
+      const year = displayedMonth.getFullYear();
+      const month = displayedMonth.getMonth();
+      title.textContent = `${months[month]} ${year}`.toUpperCase();
+
+      const offset = (new Date(year, month, 1).getDay() + 6) % 7;
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      const eventsByDay = {};
+      // 1. On stocke tous les événements dans un tableau pour pouvoir les compter
+      events.forEach(evt => {
+        const d = getEventDate(evt);
+        if (d && d.getFullYear() === year && d.getMonth() === month) {
+          const key = dateKey(d);
+          if (!eventsByDay[key]) eventsByDay[key] = [];
+          eventsByDay[key].push(evt);
+        }
+      });
+
+      let markup = "";
+      for (let i = 0; i < offset; i++) {
+        markup += '<span class="py-2 md:py-3"></span>';
+      }
+      for (let day = 1; day <= totalDays; day++) {
+        const key = dateKey(new Date(year, month, day));
+        const dayEvts = eventsByDay[key]; // Récupère le tableau d'événements du jour
+
+        if (dayEvts && dayEvts.length > 0) {
+          if (dayEvts.length === 1) {
+            // UN SEUL TOURNOI : On met la couleur de la boutique
+            const hex = getStoreHexColor(dayEvts[0].location);
+            const r = parseInt(hex.slice(1, 3), 16) || 139;
+            const g = parseInt(hex.slice(3, 5), 16) || 92;
+            const b = parseInt(hex.slice(5, 7), 16) || 246;
+
+            markup += `
+              <button 
+                type="button" 
+                data-date="${key}" 
+                style="background-color: rgba(${r}, ${g}, ${b}, 0.25); color: ${hex}; border: 1px solid rgba(${r}, ${g}, ${b}, 0.6);" 
+                class="home-day-btn py-2 md:py-3 rounded-xl font-black block w-full transition-transform hover:scale-105 cursor-pointer shadow-lg">
+                ${day}
+              </button>`;
+          } else {
+            // PLUSIEURS TOURNOIS : On met en BLANC avec une petite pastille pour alerter le joueur
+            markup += `
+              <button 
+                type="button" 
+                data-date="${key}" 
+                style="background-color: rgba(255, 255, 255, 0.15); color: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.8);" 
+                class="home-day-btn py-2 md:py-3 rounded-xl font-black block w-full transition-transform hover:scale-105 cursor-pointer shadow-lg relative">
+                ${day}
+                <span class="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-white"></span>
+              </button>`;
+          }
+        } else {
+          markup += `<span class="py-2 md:py-3 text-meva-textMuted/40 block">${day}</span>`;
+        }
+      }
+      daysContainer.innerHTML = markup;
+
+      // Clic sur un jour pour filtrer avec scroll doux vers les résultats
+      daysContainer.querySelectorAll(".home-day-btn").forEach(btn => {
+        btn.onclick = () => {
+          const clickedDate = btn.dataset.date;
+          const filtered = events.filter(e => dateKey(getEventDate(e)) === clickedDate);
+          renderEventsGrid(filtered, true); 
+
+          const gridTarget = document.getElementById('events-grid');
+            if (gridTarget) {
+              const y = gridTarget.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 1.5);
+              window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        };
+      });
+    }
+
+    async function initHomePage() {
+      const [allEvents, allStores, allNews] = await Promise.all([
+        getEvents(),
+        getStores(),
+        getNews()
+      ]);
+      
+      cachedStores = allStores || [];
+      
+      // --- CALENDRIER ACCUEIL ---
+      document.getElementById("home-prev-month")?.addEventListener("click", () => {
+        displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() - 1, 1);
+        renderHomeCalendar(allEvents || []);
+      });
+      document.getElementById("home-next-month")?.addEventListener("click", () => {
+        displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() + 1, 1);
+        renderHomeCalendar(allEvents || []);
+      });
+
+      renderHomeCalendar(allEvents || []);
+      
+      // --- FILTRES LÉGENDE (Génération dynamique) ---
+      const legendContainer = document.getElementById("home-store-legend");
+      if (legendContainer) {
+        let buttonsHtml = cachedStores.map(store => {
+          const color = store.color || getStoreHexColor(store.name);
+          return `
+            <button data-store="${store.name}" class="store-filter-btn flex items-center justify-start gap-3 px-4 py-3 bg-meva-bg hover:bg-meva-border border border-meva-border rounded-xl transition-colors w-full text-left">
+              <span class="w-3.5 h-3.5 rounded-full flex-shrink-0" style="background-color: ${color};"></span>
+              <span class="text-xs md:text-sm font-bold text-white truncate">${store.name}</span>
+            </button>
+          `;
+        }).join("");
+
+        buttonsHtml += `
+          <button data-store="MEVA" class="store-filter-btn flex items-center justify-start gap-3 px-4 py-3 bg-meva-bg hover:bg-meva-border border border-meva-border rounded-xl transition-colors w-full text-left">
+            <span class="w-3.5 h-3.5 rounded-full bg-[#8B5CF6] flex-shrink-0"></span>
+            <span class="text-xs md:text-sm font-bold text-white truncate">MEVA</span>
+          </button>
+        `;
+
+        buttonsHtml += `
+          <button data-store="all" class="store-filter-btn flex items-center justify-center gap-3 px-4 py-3 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold rounded-xl transition-colors w-full text-center col-span-2 lg:col-span-1 mt-2">
+            <span class="text-xs md:text-sm">Voir tout le calendrier</span>
+          </button>
+        `;
+
+        legendContainer.innerHTML = buttonsHtml;
+
+        // Activation des clics avec scroll doux vers les résultats
+        legendContainer.querySelectorAll(".store-filter-btn").forEach(btn => {
+          btn.onclick = () => {
+            const store = btn.dataset.store;
+            if (store === "all") {
+              renderEventsGrid(allEvents || [], false);
+            } else {
+              const filtered = (allEvents || []).filter(e => (e.location || "").toLowerCase().includes(store.toLowerCase()));
+              renderEventsGrid(filtered, true);
+            }
+
+            const gridTarget = document.getElementById('events-grid');
+          if (gridTarget) {
+            const y = gridTarget.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 1.5);
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+          };
+        });
+      }
+
+      // --- TOURNOIS ---
+      const evContainer = document.getElementById("events-grid");
+      
+      window.renderEventsGrid = function(list, isFiltered = false) {
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let upcomingEvents = (list || []).filter(evt => {
+          const d = getEventDate(evt);
+          return d && d >= today; 
+        });
+
+        upcomingEvents.sort((a, b) => getEventDate(a) - getEventDate(b));
+
+        const eventsToShow = isFiltered ? upcomingEvents : upcomingEvents.slice(0, 6);
+        
+        if (eventsToShow.length === 0) {
+          evContainer.innerHTML = `
+            <div class="col-span-full py-12 text-center bg-meva-surface border border-meva-border rounded-xl chamfered-card">
+              <p class="text-meva-textMuted">Aucun tournoi à venir pour cette sélection.</p>
+            </div>`;
+          return;
+        }
+
+        evContainer.innerHTML = eventsToShow.map(evt => {
+          const hex = getStoreHexColor(evt.location);
+
+          const store = (allStores || []).find(s => (s.name || "").toLowerCase() === (evt.location || "").toLowerCase());
+          const bgImg = evt.imageUrl || store?.imageUrl || "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80";
+
+          return `
+            <div class="relative bg-meva-surface border border-meva-border transition-all rounded-xl chamfered-card overflow-hidden flex flex-col justify-between" style="--hover-border-color: ${hex};" onmouseover="this.style.borderColor='${hex}'" onmouseout="this.style.borderColor='transparent'">
+              <div class="h-36 bg-cover bg-center border-b border-meva-border" style="background-image: linear-gradient(to bottom, rgba(15,17,23,0.1), rgba(15,17,23,0.95)), url('${bgImg}');">
+                 <div class="p-4 flex justify-between items-start">
+                   <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-black/60 text-white backdrop-blur-md">${evt.format}</span>
+                 </div>
+              </div>
+              <div class="p-6 space-y-4">
+                <h3 class="font-bold text-lg text-white leading-tight">${evt.title}</h3>
+                <div class="space-y-1.5">
+                  <p class="text-xs font-semibold text-white flex items-center gap-1.5 opacity-90">📅 ${evt.date}</p>
+                  <p class="text-xs text-meva-textMuted flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background-color: ${hex};"></span> ${evt.location || "Lieu non précisé"}</p>
+                </div>
+                <button onclick="localStorage.setItem('meva_current_event', '${evt.id}'); window.location.href='./evenement.html';" class="block w-full text-center py-3 mt-2 bg-meva-accent hover:bg-meva-accentHover text-sm font-bold rounded-xl text-meva-bg transition-colors shadow-lg">Détails de l'événement →</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      };
+
+      renderEventsGrid(allEvents || [], false);
+
+      // --- BOUTIQUES ---
+      const stContainer = document.getElementById("stores-grid");
+      const stores = (allStores || []).slice(0, 3);
+      if (stores.length === 0) {
+        stContainer.innerHTML = `<p class="text-xs text-meva-textMuted">Aucune boutique enregistrée.</p>`;
+      } else {
+        stContainer.innerHTML = stores.map(st => `
+          <a href="./boutiques.html" class="bg-meva-surface border border-meva-border hover:border-meva-accent/50 transition-colors rounded-xl chamfered-card overflow-hidden flex flex-col group">
+            <div class="h-36 bg-cover bg-center border-b border-meva-border" style="background-image: url('${st.imageUrl || ''}');"></div>
+            <div class="p-6 space-y-2">
+              <div class="flex items-center justify-between"><h3 class="font-bold text-white group-hover:text-meva-accent text-lg">${st.name}</h3><span class="text-xs text-meva-accent font-bold">→</span></div>
+              <p class="text-xs text-meva-textMuted flex items-center gap-1.5">📍 ${st.city}</p>
+              <p class="text-xs text-meva-textMuted flex items-center gap-1.5">🕒 ${st.hours}</p>
+            </div>
+          </a>
+        `).join("");
+      }
+
+      // --- ACTUALITÉS ---
+      const nwContainer = document.getElementById("news-grid");
+      // Tri de la plus récente à la plus ancienne (par createdAt ou ID de création)
+      const sortedNews = [...(allNews || [])].sort((a, b) => {
+        const timeA = a.createdAt || parseInt((a.id || "").replace("nw-", ""), 10) || 0;
+        const timeB = b.createdAt || parseInt((b.id || "").replace("nw-", ""), 10) || 0;
+        return timeB - timeA;
+      });
+      const news = sortedNews.slice(0, 1);
+      if (news.length === 0) {
+        nwContainer.innerHTML = `<p class="text-xs text-meva-textMuted">Aucune actualité.</p>`;
+      } else {
+        nwContainer.innerHTML = news.map(nw => `
+          <div class="md:col-span-3 bg-meva-surface border border-meva-border rounded-xl chamfered-card overflow-hidden flex flex-col md:flex-row hover:border-meva-accent/40 transition-colors group cursor-pointer" onclick="localStorage.setItem('meva_current_news', '${nw.id}'); window.location.href='./actualite.html'">
+            <div class="md:w-1/2 h-56 md:h-auto bg-cover bg-center border-b md:border-b-0 md:border-r border-meva-border" style="background-image: url('${nw.imageUrl || ''}');"></div>
+            <div class="p-6 md:p-10 flex flex-col justify-center space-y-4 md:w-1/2">
+              <span class="text-[10px] font-semibold px-3 py-1 rounded-md bg-purple-900/40 text-meva-accent border border-meva-accent/30 w-max">Actualité récente</span>
+              <h3 class="text-xl md:text-3xl font-extrabold text-white group-hover:text-meva-accent transition-colors">${nw.title}</h3>
+              <p class="text-sm text-meva-textMuted leading-relaxed">${nw.content.substring(0, 180)}...</p>
+              <div class="pt-4"><span class="text-meva-accent text-sm font-bold">Lire l'article complet →</span></div>
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+
+    initHomePage();
+
+    const btnMenu = document.getElementById("btn-mobile-menu");
+    const mobileMenu = document.getElementById("mobile-menu");
+    if (btnMenu && mobileMenu) {
+      btnMenu.onclick = () => {
+        mobileMenu.classList.toggle("hidden");
+      };
+    }
+  </script>
+  <script type="module" src="./navbar.js"></script>
+</body>
+</html>

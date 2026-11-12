@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actualité — MEVA Initiative</title>
+  <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
+
+
+  <!-- Contenu Principal -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    
+    <div>
+      <a href="./actualites.html" class="inline-flex items-center gap-2 text-xs font-medium text-meva-textMuted hover:text-white transition-colors">
+        ← Retour aux actualités
+      </a>
+    </div>
+
+    <div id="news-article-container">
+      <p class="text-xs text-meva-textMuted text-center py-12">Chargement de l'article...</p>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-meva-border bg-meva-surface/50 mt-12 py-8 text-xs text-meva-textMuted">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      
+      <!-- Copyright & Liens -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p>© 2026 MEVA Initiative. Tous droits réservés.</p>
+        <div class="flex gap-6">
+          <a href="mailto:mevainitiative@gmail.com" class="hover:text-meva-textMain transition-colors">Contact</a>
+          <a href="./association.html" class="hover:text-meva-textMain transition-colors">Mentions légales</a>
+          <a href="./association.html" class="hover:text-meva-textMain transition-colors">Adhésion HelloAsso</a>
+        </div>
+      </div>
+
+      <!-- Clause légale Star Wars / Non-affiliation -->
+      <p class="text-[10px] text-meva-textMuted/60 text-center md:text-left leading-relaxed border-t border-meva-border/30 pt-3">
+        MEVA Initiative est une association loi 1901 à but non lucratif, indépendante et sans affiliation avec Lucasfilm Ltd., The Walt Disney Company ou Fantasy Flight Games. <em>Star Wars</em> et l'ensemble des éléments associés sont des marques déposées de leurs ayants droit respectifs.
+      </p>
+
+    </div>
+  </footer>
+
+  <script type="module">
+    import { getNews } from "./store.js";
+
+    async function loadArticle() {
+      const container = document.getElementById("news-article-container");
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get("id") || localStorage.getItem("meva_current_news");
+
+      const newsList = await getNews();
+      const article = newsList.find(n => n.id === articleId) || newsList[0];
+
+      if (!article) {
+        container.innerHTML = `<p class="text-xs text-meva-textMuted text-center py-12">Aucun article trouvé.</p>`;
+        return;
+      }
+
+      // Construction propre de la liste à puces avec gestion automatique du gras
+      let bulletsHtml = "";
+      if (article.bullets && article.bullets.length > 0) {
+        const items = article.bullets.map(bullet => {
+          if (bullet.includes(":")) {
+            const parts = bullet.split(":");
+            const label = parts[0].trim();
+            const rest = parts.slice(1).join(":").trim();
+            return `<li><strong class="text-white">${label} :</strong> ${rest}</li>`;
+          }
+          return `<li>${bullet}</li>`;
+        }).join("");
+
+        bulletsHtml = `
+          ${article.bulletsTitle ? `<h3 class="text-lg font-bold text-white pt-2">${article.bulletsTitle}</h3>` : ''}
+          <ul class="space-y-2 text-sm text-meva-textMuted list-disc list-inside">
+            ${items}
+          </ul>
+        `;
+      }
+
+      // Encadré Rappel / Alerte
+      let boxHtml = "";
+      if (article.boxText) {
+        boxHtml = `
+          <div class="p-4 bg-meva-bg border border-meva-border rounded-xl space-y-2">
+            ${article.boxTitle ? `<span class="text-xs font-bold text-meva-accent uppercase tracking-wider block">${article.boxTitle}</span>` : ''}
+            <p class="text-xs text-meva-textMuted leading-relaxed">
+              ${article.boxText.replace(/\n/g, "<br>")}
+            </p>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <article class="bg-meva-surface border border-meva-border rounded-2xl chamfered-card overflow-hidden">
+          
+          <!-- Bannière d'en-tête -->
+          <div class="relative w-full h-56 sm:h-72 md:h-80 bg-cover bg-center border-b border-meva-border flex items-center justify-center p-6 text-center" style="background-image: linear-gradient(to bottom, rgba(15,17,23,0.5), rgba(15,17,23,0.9)), url('${article.imageUrl || ''}');">
+            <div class="space-y-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-meva-accent">${article.badge || 'Actualité'}</span>
+              <h1 class="text-2xl sm:text-4xl font-black text-white">${article.title}</h1>
+            </div>
+          </div>
+
+          <!-- Corps de l'article -->
+          <div class="p-6 sm:p-10 space-y-8">
+            
+            <div class="space-y-3 border-b border-meva-border/60 pb-6">
+              <div class="flex items-center gap-3">
+                <span class="text-[10px] font-semibold px-2.5 py-0.5 rounded bg-purple-900/40 text-meva-accent border border-meva-accent/30">
+                  ${article.badge || 'Ligue & Tournois'}
+                </span>
+                <span class="text-xs text-meva-textMuted">Publié le ${article.date || ''}</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                ${article.title}
+              </h2>
+              <p class="text-xs text-meva-textMuted">Rédigé par ${article.author || 'le staff MEVA Initiative'}</p>
+            </div>
+
+            <div class="space-y-5 text-sm sm:text-base text-meva-textMain leading-relaxed">
+              ${article.intro ? `<p>${article.intro.replace(/\n/g, "<br>")}</p>` : ''}
+              
+              ${bulletsHtml}
+              
+              ${boxHtml}
+              
+              ${article.outro ? `<p>${article.outro.replace(/\n/g, "<br>")}</p>` : ''}
+            </div>
+
+            <!-- Liens de bas de page -->
+            <div class="pt-6 border-t border-meva-border/60 flex flex-col sm:flex-row gap-4">
+              <a href="./calendrier.html" class="flex-1 py-3 px-6 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold text-xs rounded-lg text-center transition-colors">
+                Voir le calendrier des tournois →
+              </a>
+              <a href="./actualites.html" class="py-3 px-6 bg-meva-bg hover:bg-meva-border border border-meva-border text-white font-semibold text-xs rounded-lg text-center transition-colors">
+                Autres articles
+              </a>
+            </div>
+
+          </div>
+        </article>
+      `;
+    }
+
+    loadArticle();
+  </script>
+  <script type="module" src="./navbar.js"></script>
+</body>
+</html>

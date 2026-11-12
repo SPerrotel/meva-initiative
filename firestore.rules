@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Fonctions d'aide
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles.admin == true;
+    }
+
+    function isMember() {
+      return isAuthenticated() && (
+        isAdmin() || 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles.member == true
+      );
+    }
+
+    // 1. Profils utilisateurs
+    match /users/{userId} {
+      // Un admin peut tout voir ; un joueur ne voit que son propre profil
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+
+      // Création de son compte : interdiction formelle de s'auto-attribuer un rôle admin ou member
+      allow create: if isAuthenticated() && request.auth.uid == userId &&
+        (!request.resource.data.keys().hasAny(['roles']) || 
+         (request.resource.data.roles.admin == false && request.resource.data.roles.member == false));
+
+      // Mise à jour de son profil : un utilisateur peut modifier son pseudo/nom, mais SEUL un admin peut toucher au champ "roles"
+      allow update: if isAuthenticated() && (
+        isAdmin() || 
+        (request.auth.uid == userId && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['roles']))
+      );
+
+      // Suppression réservée aux admins
+      allow delete: if isAdmin();
+    }
+
+    // 2. Événements / Tournois
+    match /events/{eventId} {
+      // Lecture publique sauf si marqué privé (réservé aux adhérents)
+      allow read: if !resource.data.isPrivate || isMember();
+      allow write: if isAdmin();
+    }
+
+    // 3. Contenus publics (Actualités, Boutiques, Config du site)
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /stores/{storeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /config_home/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /config_asso/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 4. Table des pré-adhésions HelloAsso
+    match /pending_memberships/{email} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

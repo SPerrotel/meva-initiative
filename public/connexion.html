@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — MEVA Initiative</title>
+  <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
+
+  <main class="flex-grow flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md bg-meva-surface border border-meva-border p-8 rounded-2xl chamfered-card space-y-6">
+      
+      <div class="text-center space-y-2">
+        <h1 id="auth-title" class="text-2xl font-extrabold text-white">Espace Joueur</h1>
+        <p id="auth-subtitle" class="text-xs text-meva-textMuted">Connecte-toi pour déclarer tes participations aux tournois</p>
+      </div>
+
+      <!-- Message d'erreur -->
+      <div id="auth-error" class="hidden p-3 bg-red-950/40 border border-red-800/60 rounded-lg text-xs text-red-300"></div>
+
+      <!-- Connexion Google en 1 clic -->
+      <button id="btn-google" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-meva-bg hover:bg-[#1a1f2c] border border-meva-border hover:border-meva-accent rounded-lg text-sm font-medium transition-colors">
+        <svg class="w-4 h-4" viewBox="0 0 24 24">
+          <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.2 9 5 12 5z"/>
+          <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
+          <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+          <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.2-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+        </svg>
+        <span>Continuer avec Google</span>
+      </button>
+
+      <div class="relative flex items-center justify-center">
+        <div class="border-t border-meva-border w-full"></div>
+        <span class="bg-meva-surface px-3 text-[11px] text-meva-textMuted uppercase tracking-wider">ou par email</span>
+      </div>
+
+      <!-- Formulaire E-mail / MDP -->
+      <form id="auth-form" class="space-y-4">
+        <div id="field-pseudo" class="hidden space-y-1">
+          <label class="text-xs text-meva-textMuted">Pseudo joueur</label>
+          <input type="text" id="input-pseudo" placeholder="Ex: Wedge74" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs text-meva-textMuted">Adresse email</label>
+          <input type="email" id="input-email" required placeholder="nom@exemple.fr" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between items-center">
+            <label class="text-xs text-meva-textMuted">Mot de passe</label>
+            <button type="button" id="btn-forgot-password" class="text-[10px] text-meva-accent hover:underline">Mot de passe oublié ?</button>
+          </div>
+          <input type="password" id="input-password" required placeholder="••••••••" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+        </div>
+
+        <button type="submit" id="btn-submit" class="w-full py-2.5 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-semibold rounded-lg text-sm transition-colors">
+          Se connecter
+        </button>
+      </form>
+
+      <!-- Toggle Connexion / Inscription -->
+      <div class="text-center pt-2">
+        <button id="btn-toggle-mode" type="button" class="text-xs text-meva-accent hover:underline">
+          Pas encore de compte ? S'inscrire
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module">
+    import { db, auth } from "./firebase-config.js";
+    import { 
+      signInWithPopup, GoogleAuthProvider, 
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, 
+      sendPasswordResetEmail, onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const form = document.getElementById("auth-form");
+    const toggleBtn = document.getElementById("btn-toggle-mode");
+    const title = document.getElementById("auth-title");
+    const submitBtn = document.getElementById("btn-submit");
+    const pseudoField = document.getElementById("field-pseudo");
+    const errorBox = document.getElementById("auth-error");
+    const emailInput = document.getElementById("input-email");
+    const passInput = document.getElementById("input-password");
+    
+    let isRegisterMode = false;
+    let isProcessingLogin = false; // <-- LE VERROU DE SÉCURITÉ
+
+    // --- ROUTAGE AUTOMATIQUE ---
+    async function redirectUser(user) {
+      if (!user) return;
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists() && snap.data().roles?.admin === true) {
+          window.location.href = "./admin/dashboard.html";
+        } else {
+          window.location.href = "./profil.html";
+        }
+      } catch (err) {
+        window.location.href = "./profil.html";
+      }
+    }
+
+    // L'écouteur ne redirige QUE s'il n'y a pas d'action manuelle en cours
+    onAuthStateChanged(auth, (user) => {
+      if (user && !isProcessingLogin) {
+        redirectUser(user);
+      }
+    });
+
+    // --- UI TOGGLE ---
+    toggleBtn.addEventListener("click", () => {
+      isRegisterMode = !isRegisterMode;
+      title.textContent = isRegisterMode ? "Créer un compte" : "Espace Joueur";
+      submitBtn.textContent = isRegisterMode ? "Créer mon compte" : "Se connecter";
+      toggleBtn.textContent = isRegisterMode ? "Déjà un compte ? Se connecter" : "Pas encore de compte ? S'inscrire";
+      pseudoField.classList.toggle("hidden", !isRegisterMode);
+      errorBox.classList.add("hidden");
+    });
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.remove("hidden");
+    }
+
+    // --- MOT DE PASSE OUBLIÉ ---
+    document.getElementById("btn-forgot-password").addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        return showError("Saisis ton adresse e-mail dans le champ ci-dessous puis clique sur 'Mot de passe oublié'.");
+      }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        errorBox.classList.remove("hidden", "bg-red-950/40", "border-red-800/60", "text-red-300");
+        errorBox.classList.add("bg-green-950/40", "border-green-800/60", "text-green-300");
+        errorBox.textContent = "Un e-mail de réinitialisation a été envoyé.";
+      } catch (err) {
+        showError("Erreur lors de l'envoi de l'e-mail. Vérifie l'adresse saisie.");
+      }
+    });
+
+    // --- CONNEXION GOOGLE ---
+    document.getElementById("btn-google").addEventListener("click", async () => {
+      errorBox.classList.add("hidden");
+      isProcessingLogin = true; // On active le verrou
+      const provider = new GoogleAuthProvider();
+      
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        // On attend que Firestore réponde avant de bouger
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        
+        if (!snap.exists()) {
+          await setDoc(userRef, {
+            email: user.email,
+            pseudo: user.displayName || user.email.split("@")[0] || "Joueur",
+            roles: { admin: false, member: false },
+            createdAt: new Date()
+          });
+        }
+        
+        await redirectUser(user);
+      } catch (err) {
+        isProcessingLogin = false; // On retire le verrou en cas d'erreur
+        showError("Connexion Google annulée ou échouée.");
+      }
+    });
+
+    // --- FORMULAIRE EMAIL / MDP ---
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorBox.classList.add("hidden");
+      isProcessingLogin = true; // On active le verrou
+      
+      const email = emailInput.value.trim();
+      const pass = passInput.value;
+      const pseudo = document.getElementById("input-pseudo").value.trim();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Chargement...";
+
+      try {
+        if (isRegisterMode) {
+          if (!pseudo) throw new Error("Le pseudo est obligatoire.");
+          const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+          
+          await setDoc(doc(db, "users", userCred.user.uid), {
+            email: email,
+            pseudo: pseudo,
+            roles: { admin: false, member: false },
+            createdAt: new Date()
+          });
+          await redirectUser(userCred.user);
+        } else {
+          const userCred = await signInWithEmailAndPassword(auth, email, pass);
+          await redirectUser(userCred.user);
+        }
+      } catch (err) {
+        isProcessingLogin = false; // On retire le verrou
+        submitBtn.disabled = false;
+        submitBtn.textContent = isRegisterMode ? "Créer mon compte" : "Se connecter";
+        
+        if (err.code === 'auth/email-already-in-use') showError("Cette adresse e-mail est déjà utilisée.");
+        else if (err.code === 'auth/invalid-credential') showError("E-mail ou mot de passe incorrect.");
+        else if (err.code === 'auth/weak-password') showError("Le mot de passe doit faire au moins 6 caractères.");
+        else showError(err.message || "Une erreur est survenue.");
+      }
+    });
+  </script>
+  <script type="module" src="./navbar.js"></script>
+</body>
+</html>

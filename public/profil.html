@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon Profil — MEVA Initiative</title>
+  <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
+
+  <!-- Contenu Principal -->
+  <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Espace Joueur</h1>
+        <p class="text-xs sm:text-sm text-meva-textMuted">Gère ton identité et retrouve tes inscriptions aux événements MEVA.</p>
+      </div>
+      <!-- BOUTON DÉCONNEXION RAJOUTÉ ICI -->
+      <div>
+        <button id="btn-logout" class="px-4 py-2 bg-meva-surface border border-red-900/40 hover:bg-red-950/40 text-red-400 font-semibold rounded-lg text-xs transition-colors">
+          Se déconnecter
+        </button>
+      </div>
+    </div>
+
+    <!-- Grille 2 colonnes -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Colonne Gauche : Infos Joueur & Statut -->
+      <div class="space-y-6">
+        <div class="bg-meva-surface border border-meva-border p-6 rounded-2xl chamfered-card space-y-5">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-meva-accent"></span>Mon Identité
+            </h2>
+            <div id="status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-gray-900/40 text-gray-400 border border-gray-800/40">
+              Chargement...
+            </div>
+          </div>
+
+          <div id="profile-msg" class="hidden p-3 rounded-lg text-xs text-center transition-all"></div>
+
+          <form id="profile-form" class="space-y-4">
+            <div class="space-y-1">
+              <label class="text-xs text-meva-textMuted">Adresse email (non modifiable)</label>
+              <input type="email" id="input-email" disabled class="w-full bg-meva-bg/50 border border-meva-border rounded-lg px-3 py-2 text-xs text-meva-textMuted cursor-not-allowed">
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs text-meva-textMuted">Pseudo joueur</label>
+              <input type="text" id="input-pseudo" required placeholder="Ex: Steve" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+            </div>
+
+            <button type="submit" id="btn-submit" class="w-full py-2.5 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold rounded-lg text-xs transition-colors">
+              Mettre à jour mon pseudo
+            </button>
+          </form>
+        </div>
+
+        <!-- Encadré adhésion si pas adhérent -->
+        <div id="box-adhesion" class="hidden p-5 rounded-2xl bg-purple-950/20 border border-meva-accent/30 space-y-2 text-xs">
+          <p class="font-bold text-white">Rejoindre l'association</p>
+          <p class="text-meva-textMuted text-[11px] leading-relaxed">Adhère à MEVA Initiative pour soutenir la scène locale et débloquer les tournois exclusifs.</p>
+          <a href="./association.html" class="inline-block pt-1 text-meva-accent font-semibold hover:underline">En savoir plus sur l'adhésion →</a>
+        </div>
+      </div>
+
+      <!-- Colonne Droite : Mes Tournois -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-meva-surface border border-meva-border p-6 rounded-2xl chamfered-card space-y-5">
+          <div class="flex items-center justify-between border-b border-meva-border pb-4">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-meva-accent"></span>Mes Tournois Prévus
+              </h2>
+              <p class="text-xs text-meva-textMuted mt-0.5">Événements où tu as réservé ta place</p>
+            </div>
+            <a href="./calendrier.html" class="text-xs text-meva-accent hover:underline font-semibold">+ Trouver un tournoi</a>
+          </div>
+
+          <!-- Liste des tournois -->
+          <div id="my-tournaments-list" class="divide-y divide-meva-border/60">
+            <p class="py-6 text-xs text-center text-meva-textMuted">Recherche de tes inscriptions...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module">
+    import { db, auth } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      doc, getDoc, updateDoc, collection, query, where, getDocs, deleteDoc, increment 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const form = document.getElementById("profile-form");
+    const emailInput = document.getElementById("input-email");
+    const pseudoInput = document.getElementById("input-pseudo");
+    const statusBadge = document.getElementById("status-badge");
+    const msgBox = document.getElementById("profile-msg");
+    const submitBtn = document.getElementById("btn-submit");
+    const boxAdhesion = document.getElementById("box-adhesion");
+    const tournamentsList = document.getElementById("my-tournaments-list");
+    const logoutBtn = document.getElementById("btn-logout");
+
+    let currentUser = null;
+
+    function showMsg(text, type = "success") {
+      msgBox.textContent = text;
+      msgBox.className = type === "success" 
+        ? "p-3 rounded-lg text-xs text-center bg-green-950/40 border border-green-800/60 text-green-300"
+        : "p-3 rounded-lg text-xs text-center bg-red-950/40 border border-red-800/60 text-red-300";
+      msgBox.classList.remove("hidden");
+      setTimeout(() => msgBox.classList.add("hidden"), 3000);
+    }
+
+    // Charger les inscriptions aux tournois
+    async function loadUserTournaments(uid) {
+      try {
+        const q = query(collection(db, "registrations"), where("userId", "==", uid));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          tournamentsList.innerHTML = `
+            <div class="py-8 text-center space-y-3">
+              <p class="text-xs text-meva-textMuted">Tu n'es inscrit à aucun tournoi pour le moment.</p>
+              <a href="./calendrier.html" class="inline-block px-4 py-2 bg-meva-bg border border-meva-border hover:border-meva-accent rounded-lg text-xs font-semibold text-white transition-colors">
+                Consulter le calendrier des tournois
+              </a>
+            </div>
+          `;
+          return;
+        }
+
+        const registrations = snap.docs.map(d => ({ regId: d.id, ...d.data() }));
+
+        const eventPromises = registrations.map(async (reg) => {
+          let eventData = null;
+          if (reg.eventId) {
+            try {
+              const evDoc = await getDoc(doc(db, "events", reg.eventId));
+              if (evDoc.exists()) eventData = evDoc.data();
+            } catch (e) {
+              console.warn("Tournoi introuvable :", reg.eventId);
+            }
+          }
+          return {
+            regId: reg.regId,
+            eventId: reg.eventId,
+            eventData: eventData || { title: "Tournoi (ID: " + reg.eventId + ")", date: "Date non précisée", location: "Lieu non précisé", format: "Premier" }
+          };
+        });
+
+        const list = await Promise.all(eventPromises);
+
+        tournamentsList.innerHTML = list.map(item => `
+          <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-900/40 text-meva-accent border border-meva-accent/30">
+                  ${item.eventData.format || "Premier"}
+                </span>
+                <span class="text-white font-bold text-sm">${item.eventData.title}</span>
+              </div>
+              <p class="text-meva-textMuted">📅 ${item.eventData.date} • 📍 ${item.eventData.location}</p>
+            </div>
+            <div class="flex items-center gap-2 self-end sm:self-center">
+              <button onclick="localStorage.setItem('meva_current_event', '${item.eventId}'); window.location.href='./evenement.html';" class="px-3 py-1.5 bg-meva-bg hover:bg-meva-border border border-meva-border text-white font-semibold rounded-lg transition-colors">
+                Voir fiche
+              </button>
+              <button data-regid="${item.regId}" data-eventid="${item.eventId}" class="btn-cancel-reg px-3 py-1.5 bg-red-950/20 hover:bg-red-950/40 border border-red-900/30 text-red-400 font-semibold rounded-lg transition-colors">
+                Se désinscrire
+              </button>
+            </div>
+          </div>
+        `).join("");
+
+        // Désinscription directe depuis le profil
+        document.querySelectorAll(".btn-cancel-reg").forEach(btn => {
+          btn.onclick = async () => {
+            if (!confirm("Es-tu sûr de vouloir te désinscrire de ce tournoi ?")) return;
+            btn.disabled = true;
+            try {
+              const regId = btn.dataset.regid;
+              const evId = btn.dataset.eventid;
+              
+              // 1. Supprime le ticket
+              await deleteDoc(doc(db, "registrations", regId));
+              
+              // 2. Retire le joueur du tableau de l'événement et met à jour le compteur
+              if (evId) {
+                try {
+                  const evSnap = await getDoc(doc(db, "events", evId));
+                  if (evSnap.exists()) {
+                    const evData = evSnap.data();
+                    let parts = Array.isArray(evData.participants) ? evData.participants : [];
+                    parts = parts.filter(id => id !== uid);
+                    
+                    await updateDoc(doc(db, "events", evId), {
+                      participants: parts,
+                      count: Math.max(0, parts.length)
+                    });
+                  }
+                } catch (e) {
+                  console.warn("Mise à jour event échouée :", e);
+                }
+              }
+
+              // 3. Vide le cache local pour forcer le calendrier à relire le nouveau total
+              localStorage.removeItem("meva_events");
+
+              await loadUserTournaments(uid);
+            } catch (err) {
+              console.error(err);
+              alert("Erreur lors de la désinscription.");
+              btn.disabled = false;
+            }
+          };
+        });
+
+      } catch (err) {
+        console.error("Erreur chargement tournois:", err);
+        tournamentsList.innerHTML = `<p class="py-6 text-xs text-center text-red-400">Impossible de charger tes inscriptions.</p>`;
+      }
+    }
+
+    // Auth
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "./connexion.html";
+        return;
+      }
+      
+      currentUser = user;
+      emailInput.value = user.email || "";
+
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          pseudoInput.value = data.pseudo || data.displayName || "";
+          
+          const isMember = data.roles?.member === true;
+          if (isMember) {
+            statusBadge.textContent = "✓ Membre MEVA Actif";
+            statusBadge.className = "px-2.5 py-1 rounded-full text-[10px] font-semibold bg-green-950/40 text-green-400 border border-green-800/40";
+            boxAdhesion.classList.add("hidden");
+          } else {
+            statusBadge.textContent = "Compte Gratuit";
+            statusBadge.className = "px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#232734] text-meva-textMuted border border-meva-border";
+            boxAdhesion.classList.remove("hidden");
+          }
+        }
+
+        await loadUserTournaments(user.uid);
+
+      } catch (err) {
+        console.error("Erreur lecture profil:", err);
+        showMsg("Erreur de chargement du profil.", "error");
+      }
+    });
+
+    // Sauvegarde pseudo
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const pseudo = pseudoInput.value.trim();
+      if (!pseudo || !currentUser) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enregistrement...";
+
+      try {
+        await updateDoc(doc(db, "users", currentUser.uid), { pseudo });
+        showMsg("Pseudo enregistré avec succès !");
+      } catch (err) {
+        console.error(err);
+        showMsg("Erreur lors de la sauvegarde.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Mettre à jour mon pseudo";
+      }
+    });
+
+    // Déconnexion propre
+    if (logoutBtn) {
+      logoutBtn.onclick = async () => {
+        try {
+          localStorage.removeItem("meva_auth_state");
+          localStorage.removeItem("meva_is_member");
+          localStorage.removeItem("meva_is_admin");
+          await signOut(auth);
+          window.location.href = "./index.html";
+        } catch (err) {
+          console.error("Erreur déconnexion:", err);
+        }
+      };
+    }
+  </script>
+  <script type="module" src="./navbar.js"></script>
+</body>
+</html>

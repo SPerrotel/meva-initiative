@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'association — MEVA Initiative</title>
+  <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
+  <meta name="description" content="Découvrez l'association MEVA Initiative et rejoignez la communauté Star Wars: Unlimited.">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            meva: {
+              bg: '#0B0D14',
+              surface: '#151822',
+              border: '#2A2E3D',
+              accent: '#8B5CF6',
+              accentHover: '#7C3AED',
+              textMain: '#E2E8F0',
+              textMuted: '#94A3B8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
+
+  <!-- Calque assombrissant identique aux autres pages -->
+  <div class="fixed inset-0 bg-[#0F1117]/85 z-[-1] pointer-events-none"></div>
+
+  <!-- Contenu Principal -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Bannière Association : Logo MEVA à gauche + Textes à droite -->
+    <section class="bg-meva-surface border border-meva-border rounded-2xl chamfered-card p-8 md:p-12 shadow-xl shadow-black/40 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+      
+      <!-- Logo MEVA Initiative à gauche -->
+      <div class="flex-shrink-0 flex items-center justify-center">
+        <img src="./assets/images/meva_initiative_logo_logo.png" 
+             alt="MEVA Initiative" 
+             class="h-32 md:h-44 w-auto object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] transition-transform hover:scale-105">
+      </div>
+
+      <!-- Textes à droite -->
+      <div class="flex-grow space-y-3 text-center md:text-left">
+        <h1 id="asso-display-title" class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          L'association MEVA Initiative
+        </h1>
+        <p id="asso-display-subtitle" class="text-meva-textMuted text-sm md:text-base leading-relaxed max-w-2xl">
+          Promouvoir, rassembler et animer la communauté Star Wars: Unlimited en Haute-Savoie et ses environs.
+        </p>
+      </div>
+
+    </section>
+
+    <!-- Grille de présentation -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Colonne Gauche : Notre vocation & Missions (2/3) -->
+      <div class="lg:col-span-2 space-y-6">
+        <article class="bg-meva-surface border border-meva-border p-6 md:p-8 rounded-2xl chamfered-card space-y-3">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-meva-accent"></span>
+            Notre vocation
+          </h2>
+          <p id="asso-display-desc" class="text-xs md:text-sm text-meva-textMuted leading-relaxed">
+            MEVA Initiative est une association loi 1901 née de la passion commune de joueurs locaux.
+          </p>
+        </article>
+
+        <article class="bg-meva-surface border border-meva-border p-6 md:p-8 rounded-2xl chamfered-card space-y-4">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-meva-accent"></span>
+            Nos missions
+          </h2>
+          <ul id="asso-display-missions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs md:text-sm text-meva-textMuted"></ul>
+        </article>
+      </div>
+
+      <!-- Colonne Droite : Adhésion HelloAsso (1/3) -->
+      <div class="space-y-6">
+        <div class="bg-meva-surface border border-meva-accent/40 p-6 md:p-8 rounded-2xl chamfered-card space-y-5 flex flex-col justify-between h-full">
+          <div class="space-y-3">
+            <span id="asso-display-badge" class="text-[10px] uppercase font-bold tracking-widest text-meva-accent bg-purple-900/40 border border-meva-accent/30 px-2.5 py-1 rounded">Adhésion annuelle</span>
+            <h3 id="asso-display-card-title" class="text-xl font-bold text-white leading-snug">Rejoindre MEVA Initiative sur HelloAsso</h3>
+            <p id="asso-display-card-desc" class="text-xs text-meva-textMuted leading-relaxed">
+              Adhérer permet d'accéder aux tournois exclusifs réservés aux membres, de figurer au classement officiel de la ligue et de soutenir le développement du jeu en Haute-Savoie.
+            </p>
+          </div>
+          <div class="pt-2">
+            <a id="asso-display-helloasso" href="https://www.helloasso.com/associations/meva-initiative" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold text-xs rounded-lg transition-colors shadow-lg shadow-purple-950/50">
+              <span id="asso-display-btn-text">Adhérer via HelloAsso</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Pied de page -->
+  <footer class="border-t border-meva-border bg-meva-surface/50 mt-12 py-8 text-xs text-meva-textMuted">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      
+      <!-- Copyright & Liens -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p>© 2026 MEVA Initiative. Tous droits réservés.</p>
+        <div class="flex gap-6">
+          <a href="mailto:mevainitiative@gmail.com" class="hover:text-meva-textMain transition-colors">Contact</a>
+          <a href="./association.html" class="hover:text-meva-textMain transition-colors">Mentions légales</a>
+          <a href="./association.html" id="footer-helloasso-link" class="hover:text-meva-textMain transition-colors">Adhésion HelloAsso</a>
+        </div>
+      </div>
+
+      <!-- Clause légale Star Wars / Non-affiliation -->
+      <p class="text-[10px] text-meva-textMuted/60 text-center md:text-left leading-relaxed border-t border-meva-border/30 pt-3">
+        MEVA Initiative est une association loi 1901 à but non lucratif, indépendante et sans affiliation avec Lucasfilm Ltd., The Walt Disney Company ou Fantasy Flight Games. <em>Star Wars</em> et l'ensemble des éléments associés sont des marques déposées de leurs ayants droit respectifs.
+      </p>
+
+    </div>
+  </footer>
+
+  <script type="module">
+    import { getAssoConfig } from "./store.js";
+
+    // Menu burger mobile
+    const btnMenu = document.getElementById("btn-mobile-menu");
+    const mobileMenu = document.getElementById("mobile-menu");
+    if (btnMenu && mobileMenu) {
+      btnMenu.onclick = () => {
+        mobileMenu.classList.toggle("hidden");
+      };
+    }
+
+    async function initAssoPage() {
+      const cfg = await getAssoConfig();
+      if (!cfg) return;
+
+      const titleEl = document.getElementById("asso-display-title");
+      const subTitleEl = document.getElementById("asso-display-subtitle");
+      if (titleEl) titleEl.textContent = cfg.title || "L'association MEVA Initiative";
+      if (subTitleEl) subTitleEl.textContent = cfg.subtitle || "";
+
+      const descEl = document.getElementById("asso-display-desc");
+      if (descEl) descEl.textContent = cfg.description || "";
+      
+      // Textes dynamiques pour l'encadré Adhésion
+      const badgeEl = document.getElementById("asso-display-badge");
+      const cardTitleEl = document.getElementById("asso-display-card-title");
+      const cardDescEl = document.getElementById("asso-display-card-desc");
+      const btnTextEl = document.getElementById("asso-display-btn-text");
+
+      if (badgeEl && cfg.membershipBadge) badgeEl.textContent = cfg.membershipBadge;
+      if (cardTitleEl && cfg.membershipTitle) cardTitleEl.textContent = cfg.membershipTitle;
+      if (cardDescEl && cfg.membershipDesc) cardDescEl.textContent = cfg.membershipDesc;
+      if (btnTextEl && cfg.membershipBtnText) btnTextEl.textContent = cfg.membershipBtnText;
+
+      const helloAssoUrl = cfg.helloAssoUrl || "https://www.helloasso.com/associations/meva-initiative";
+      const btnHelloAsso = document.getElementById("asso-display-helloasso");
+      const footerHelloAsso = document.getElementById("footer-helloasso-link");
+      if (btnHelloAsso) btnHelloAsso.href = helloAssoUrl;
+      if (footerHelloAsso) footerHelloAsso.href = helloAssoUrl;
+
+      const missionsList = document.getElementById("asso-display-missions");
+      if (missionsList && Array.isArray(cfg.missions)) {
+        missionsList.innerHTML = cfg.missions.map(m => `
+          <li class="bg-meva-bg/70 border border-meva-border p-3 rounded-lg flex items-start gap-2.5">
+            <span class="text-meva-accent font-bold mt-0.5">✔</span>
+            <span class="text-white">${m}</span>
+          </li>
+        `).join("");
+      }
+    }
+
+    initAssoPage();
+  </script>
+  <script type="module" src="./navbar.js"></script>
+</body>
+</html>
