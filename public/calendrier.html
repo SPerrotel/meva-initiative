@@ -273,9 +273,16 @@
       });
 
       const filtered = sortedEvents.filter(evt => {
-        const typeMatch =
-          currentTypeFilter === "all" ? true :
-          currentTypeFilter === "private" ? !!evt.isPrivate : !evt.isPrivate;
+    const evtDate = getEventDate(evt);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // On remet aujourd'hui à minuit pile
+
+    // Si l'événement est avant aujourd'hui, on le zappe direct
+    if (evtDate && evtDate < today) return false;
+
+    const typeMatch =
+      currentTypeFilter === "all" ? true :
+      currentTypeFilter === "private" ? !!evt.isPrivate : !evt.isPrivate;
 
         const storeMatch =
           currentStoreFilter === "all" ? true :

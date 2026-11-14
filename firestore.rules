@@ -21,8 +21,8 @@ service cloud.firestore {
 
     // 1. Profils utilisateurs
     match /users/{userId} {
-      // Un admin peut tout voir ; un joueur ne voit que son propre profil
-      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      // Lecture autorisée pour afficher les pseudos dans la liste des participants
+      allow read: if true;
 
       // Création de son compte : interdiction formelle de s'auto-attribuer un rôle admin ou member
       allow create: if isAuthenticated() && request.auth.uid == userId &&
@@ -76,6 +76,13 @@ service cloud.firestore {
     match /league_scores/{docId} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // 6. Inscriptions aux tournois (Registrations)
+    match /registrations/{docId} {
+      allow read: if true;
+      allow write: if isAdmin() || (isAuthenticated() && request.resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
     }
   }
 }
