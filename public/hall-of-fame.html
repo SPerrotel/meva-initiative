@@ -204,47 +204,58 @@
         titleEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-meva-accent"></span> Classement Général — ${currentStore}`;
       }
 
-      // 1. Rendu du Podium (Top 3)
+      // 1. PRÉ-CALCUL DES RANGS (Doit être fait AVANT le podium)
+      let currentRank = 1;
+      let previousScore = null;
+      standings.forEach((player) => {
+        if (previousScore !== null && player.officialPoints < previousScore) {
+          currentRank++;
+        }
+        previousScore = player.officialPoints;
+        player.rank = currentRank; // On grave le rang dans le marbre
+      });
+
+      // 2. Rendu du Podium Dynamique
       const podium = document.getElementById("podium-container");
-      const first = standings[0] || null;
-      const second = standings[1] || null;
-      const third = standings[2] || null;
+      const pCenter = standings[0] || null;
+      const pLeft = standings[1] || null;
+      const pRight = standings[2] || null;
 
-      podium.innerHTML = `
-        <!-- 2ème Place -->
-        <div class="flex flex-col items-center bg-meva-surface/70 border border-meva-border rounded-t-2xl p-3 sm:p-4 h-[170px] justify-end relative shadow-lg ${second ? '' : 'opacity-30'}">
-          <div class="absolute -top-7 sm:-top-9 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-slate-700 border-2 border-slate-400 flex items-center justify-center text-2xl shadow-md">🥈</div>
-          <span class="font-bold text-white text-xs sm:text-sm truncate w-full text-center">${second ? second.name : '—'}</span>
-          <span class="text-slate-300 font-extrabold text-xs sm:text-base mt-0.5">${second ? second.officialPoints + ' pts' : '0 pt'}</span>
-          <span class="text-[10px] text-meva-textMuted mt-1">${second ? second.weeksPlayedCount + ' sem.' : ''}</span>
-        </div>
+      function getPodiumBlock(player, defaultRank) {
+        if (!player) {
+          const h = defaultRank === 1 ? 'h-[210px]' : defaultRank === 2 ? 'h-[170px]' : 'h-[145px]';
+          return `<div class="bg-meva-surface/70 border border-meva-border rounded-t-2xl ${h} opacity-30"></div>`;
+        }
 
-        <!-- 1ère Place -->
-        <div class="flex flex-col items-center bg-meva-surface border-2 border-yellow-500/50 rounded-t-2xl p-3 sm:p-5 h-[210px] justify-end relative shadow-[0_0_30px_rgba(234,179,8,0.15)] ${first ? '' : 'opacity-30'}">
-          <div class="absolute -top-9 sm:-top-11 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500/20 border-2 border-yellow-400 flex items-center justify-center text-3xl sm:text-4xl shadow-xl">🥇</div>
-          <span class="font-extrabold text-white text-sm sm:text-base truncate w-full text-center">${first ? first.name : '—'}</span>
-          <span class="text-yellow-400 font-black text-sm sm:text-lg mt-0.5">${first ? first.officialPoints + ' pts' : '0 pt'}</span>
-          <span class="text-[10px] text-yellow-500/80 mt-1 font-semibold">${first ? first.weeksPlayedCount + ' sem.' : ''}</span>
-        </div>
+        const r = player.rank; // Maintenant ça marche, le rang existe !
+        const height = r === 1 ? 'h-[210px]' : r === 2 ? 'h-[170px]' : 'h-[145px]';
+        const boxStyle = r === 1 ? 'bg-meva-surface border-2 border-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.15)] z-10' : 'bg-meva-surface/70 border border-meva-border shadow-lg';
+        const medalCircle = r === 1 ? 'bg-amber-500/20 border-2 border-yellow-400 w-16 h-16 sm:w-20 sm:h-20 text-3xl sm:text-4xl -top-9 sm:-top-11' : r === 2 ? 'bg-slate-700 border-2 border-slate-400 w-14 h-14 sm:w-16 sm:h-16 text-2xl -top-7 sm:-top-9' : 'bg-amber-950/80 border-2 border-amber-700 w-14 h-14 sm:w-16 sm:h-16 text-2xl -top-7 sm:-top-9';
+        const medalEmoji = r === 1 ? '🥇' : r === 2 ? '🥈' : '🥉';
+        const ptsColor = r === 1 ? 'text-yellow-400 text-sm sm:text-lg' : r === 2 ? 'text-slate-300 text-xs sm:text-base' : 'text-amber-500 text-xs sm:text-base';
+        const semColor = r === 1 ? 'text-yellow-500/80' : 'text-meva-textMuted';
 
-        <!-- 3ème Place -->
-        <div class="flex flex-col items-center bg-meva-surface/70 border border-meva-border rounded-t-2xl p-3 sm:p-4 h-[145px] justify-end relative shadow-lg ${third ? '' : 'opacity-30'}">
-          <div class="absolute -top-7 sm:-top-9 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-950/80 border-2 border-amber-700 flex items-center justify-center text-2xl shadow-md">🥉</div>
-          <span class="font-bold text-white text-xs sm:text-sm truncate w-full text-center">${third ? third.name : '—'}</span>
-          <span class="text-amber-500 font-extrabold text-xs sm:text-base mt-0.5">${third ? third.officialPoints + ' pts' : '0 pt'}</span>
-          <span class="text-[10px] text-meva-textMuted mt-1">${third ? third.weeksPlayedCount + ' sem.' : ''}</span>
-        </div>
-      `;
+        return `
+          <div class="flex flex-col items-center rounded-t-2xl p-3 sm:p-5 justify-end relative transition-all duration-300 ${height} ${boxStyle}">
+            <div class="absolute rounded-full flex items-center justify-center shadow-md ${medalCircle}">${medalEmoji}</div>
+            <span class="font-extrabold text-white text-xs sm:text-base truncate w-full text-center">${player.name}</span>
+            <span class="font-black mt-0.5 ${ptsColor}">${player.officialPoints} pts</span>
+            <span class="text-[10px] mt-1 font-semibold ${semColor}">${player.weeksPlayedCount} sem.</span>
+          </div>
+        `;
+      }
 
-      // 2. Rendu du Tableau
+      podium.innerHTML = getPodiumBlock(pLeft, 2) + getPodiumBlock(pCenter, 1) + getPodiumBlock(pRight, 3);
+
+      // 3. Rendu du Tableau
       const tbody = document.getElementById("leaderboard-body");
       if (standings.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-meva-textMuted">Aucun score enregistré pour cette boutique.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = standings.map((player, index) => {
-        const rank = index + 1;
+      tbody.innerHTML = standings.map((player) => {
+        const rank = player.rank; // On réutilise direct le rang calculé en haut
         const isTop = rank <= 3;
 
         const detailsRows = player.weeksDetail.map(w => {
@@ -276,16 +287,18 @@
 
         return `
           <tr class="hover:bg-meva-bg/50 transition-colors cursor-pointer border-b border-meva-border/60" onclick="window.toggleDetail('${safeId}')">
-            <td class="p-3 text-center font-extrabold ${isTop ? 'text-meva-accent text-sm' : 'text-meva-textMuted'}">${rank}</td>
-            <td class="p-3">
-              <span class="font-bold text-white">${player.name}</span>
-              <span class="text-[10px] text-meva-textMuted block">Détails ▾</span>
+            <td class="p-3 text-center align-middle font-extrabold ${isTop ? 'text-meva-accent text-sm' : 'text-meva-textMuted'}">${rank}</td>
+            <td class="p-3 align-middle">
+              <div class="flex flex-col justify-center">
+                <span class="font-bold text-white leading-tight">${player.name}</span>
+                <span class="text-[10px] text-meva-textMuted flex items-center gap-1 mt-0.5">Détails <span class="text-[8px]">▼</span></span>
+              </div>
             </td>
-            <td class="p-3 text-center text-meva-textMuted font-medium">${player.weeksPlayedCount}</td>
-            <td class="p-3 text-center text-meva-textMuted font-medium">${player.totalWins}</td>
-            <td class="p-3 text-right">
-              <span class="text-sm font-black text-meva-accent font-mono bg-purple-950/40 border border-meva-accent/30 px-2.5 py-1 rounded-md">
-                ${player.officialPoints} pts
+            <td class="p-3 text-center align-middle text-meva-textMuted font-medium">${player.weeksPlayedCount}</td>
+            <td class="p-3 text-center align-middle text-meva-textMuted font-medium">${player.totalWins}</td>
+            <td class="p-3 text-right align-middle">
+              <span class="inline-flex items-baseline gap-1 text-sm font-black text-meva-accent font-mono bg-purple-950/40 border border-meva-accent/30 px-2.5 py-1 rounded-md whitespace-nowrap shadow-sm shadow-purple-900/20">
+                <span>${player.officialPoints}</span><span class="text-[10px] uppercase font-bold text-meva-accent/70 tracking-wider">pts</span>
               </span>
             </td>
           </tr>

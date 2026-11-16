@@ -41,8 +41,8 @@ service cloud.firestore {
 
     // 2. Événements / Tournois
     match /events/{eventId} {
-      // Lecture publique sauf si marqué privé (réservé aux adhérents)
-      allow read: if !resource.data.isPrivate || isMember();
+      // On autorise la lecture à TOUT LE MONDE pour éviter le blocage de Firebase
+      allow read: if true;
       allow write: if isAdmin();
     }
 

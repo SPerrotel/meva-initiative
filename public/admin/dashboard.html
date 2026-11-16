@@ -887,12 +887,18 @@
           const evt = eventsList.find(ev => ev.id === evtId);
           if (!evt) return;
 
-          // L'admin lit les vrais tickets enregistrés (seule source infaillible)
+          // L'admin lit les vrais tickets enregistrés (en incluant les invités via seats)
           let participantIds = [];
           try {
             const qReg = query(collection(db, "registrations"), where("eventId", "==", evt.id));
             const snapReg = await getDocs(qReg);
-            participantIds = snapReg.docs.map(d => d.data().userId);
+            snapReg.docs.forEach(d => {
+              const data = d.data();
+              const seats = Number(data.seats) || 1;
+              for (let i = 0; i < seats; i++) {
+                participantIds.push(data.userId);
+              }
+            });
           } catch (e) {
             console.error("Erreur lecture registrations:", e);
           }

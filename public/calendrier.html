@@ -97,6 +97,7 @@
 
     let rawEvents = [];
     let userTickets = [];
+    let eventSeatsMap = {}; // Stocke le vrai nombre de places par événement (avec +1)
     let currentTypeFilter = "all";
     let currentStoreFilter = "all";
     let selectedDate = null;
@@ -305,9 +306,9 @@
       container.innerHTML = filtered.map(evt => {
         const badge = parseDateBadge(getEventDate(evt));
         
-        // Lecture directe et prioritaire de la taille réelle du tableau des inscrits
+        // Lecture directe en incluant les +1 depuis registrations
         let parts = Array.isArray(evt.participants) ? evt.participants : [];
-        let count = Math.max(parts.length, evt.count || 0);
+        let count = Math.max(eventSeatsMap[evt.id] || 0, parts.length, evt.count || 0);
         count = Math.max(0, count);
         
         const capacity = evt.capacity || 16;
@@ -426,12 +427,23 @@
       try {
         localStorage.removeItem("meva_events");
         
-        const [eventsData, storesData] = await Promise.all([
+        const [eventsData, storesData, regsSnap] = await Promise.all([
           getEvents(),
-          getStores()
+          getStores(),
+          getDocs(collection(db, "registrations")).catch(() => null)
         ]);
         rawEvents = eventsData || [];
         cachedStores = storesData || [];
+
+        eventSeatsMap = {};
+        if (regsSnap) {
+          regsSnap.forEach(d => {
+            const data = d.data();
+            if (data.eventId) {
+              eventSeatsMap[data.eventId] = (eventSeatsMap[data.eventId] || 0) + (Number(data.seats) || 1);
+            }
+          });
+        }
 
         const locations = [
           ...new Set(rawEvents.map(evt => evt.location).filter(Boolean))

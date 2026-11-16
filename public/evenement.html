@@ -84,10 +84,11 @@
           const userSnap = await getDoc(doc(db, "users", regData.userId));
           if (userSnap.exists()) {
             const userData = userSnap.data();
-            const seats = regData.seats || 1;
+            const seats = Number(regData.seats) || 1;
             publicPlayersList.push({
               pseudo: userData.pseudo || userData.displayName || "Joueur mystère",
               isMember: userData.roles?.member === true,
+              seats: seats,
               guestsCount: seats > 1 ? seats - 1 : 0
             });
           }
@@ -188,8 +189,8 @@
         return;
       }
 
-      let parts = currentEvent.participants || [];
-      const count = Math.max(0, parts.length);
+      const totalSeatsFromRegs = publicPlayersList.reduce((sum, p) => sum + (p.seats || 1), 0);
+      const count = Math.max(0, totalSeatsFromRegs, (currentEvent.participants || []).length);
       const cap = currentEvent.capacity || 16;
       const pct = Math.min(100, Math.round((count / cap) * 100));
       const isFull = count >= cap;
