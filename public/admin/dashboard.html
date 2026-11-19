@@ -1703,9 +1703,12 @@
       const storeName = evt.location;
 
       const eventDate = getEventDate(evt) || new Date();
-      const startDate = new Date(eventDate.getFullYear(), 0, 1);
-      const days = Math.floor((eventDate - startDate) / (24 * 60 * 60 * 1000));
-      const weekNumber = Math.ceil((eventDate.getDay() + 1 + days) / 7);
+      // Calcul officiel de la semaine ISO (Lundi -> Dimanche)
+      const tempDate = new Date(Date.UTC(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate()));
+      const dayNum = tempDate.getUTCDay() || 7;
+      tempDate.setUTCDate(tempDate.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(tempDate.getUTCFullYear(), 0, 1));
+      const weekNumber = Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
 
       const rows = document.getElementById("league-scores-body").querySelectorAll("tr[data-uid]");
 
