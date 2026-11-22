@@ -1,8 +1,8 @@
 // Bundles the Firebase modular SDK from node_modules into public/vendor/firebase/.
 // One entry per product (same names as the old gstatic files) + shared hashed chunks,
 // so firebase-app is a single instance shared by auth/firestore/database.
-// Usage: node scripts/build-firebase.mjs [--watch]
-import { build, context } from "esbuild";
+// Usage: node scripts/build-firebase.mjs
+import { build } from "esbuild";
 
 const options = {
   entryPoints: ["app", "auth", "firestore", "database"].map((p) => `src/js/firebase/firebase-${p}.js`),
@@ -18,9 +18,4 @@ const options = {
   logLevel: "info",
 };
 
-if (process.argv.includes("--watch")) {
-  const ctx = await context(options);
-  await ctx.watch();
-} else {
-  await build(options);
-}
+await build(options);

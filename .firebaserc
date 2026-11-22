@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "meva-initiative"
+    "default": "meva-initiative",
+    "dev": "demo-meva-initiative"
   }
 }

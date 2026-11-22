@@ -1,51 +1,81 @@
-// Generates public/firebase-config.generated.js from layered env files.
-// Emulator ports come from firebase.json (single source of truth shared with the Firebase CLI).
-// Usage: node scripts/generate-firebase-config.mjs [dev|prod]   (default: prod)
+// Generates public/firebase-config.generated.js.
+//
+// Single source of truth for the project id: .firebaserc ("default" in prod, "dev" alias with emulators).
+// Emulator ports come from firebase.json. Everything else comes from env variables, layered by Node
+// itself via the --env-file flags in package.json (later files override earlier ones; real shell
+// variables always win):
+//   build:config  .env < .env.local
+//   dev:config    .env < .env.dev < .env.local
+//
+// Required env: FIREBASE_API_KEY, FIREBASE_APP_ID.
+// Derived from the project id / app id (Firebase naming conventions), overridable through env:
+//   authDomain        <id>.firebaseapp.com                      FIREBASE_AUTH_DOMAIN
+//   storageBucket     <id>.firebasestorage.app                  FIREBASE_STORAGE_BUCKET
+//   databaseURL       https://<id>-default-rtdb.<region>.firebasedatabase.app
+//                     (FIREBASE_DATABASE_REGION, or FIREBASE_DATABASE_URL to override)
+//   messagingSenderId second field of the app id ("1:<senderId>:web:...")   FIREBASE_MESSAGING_SENDER_ID
+// Optional: FIREBASE_MEASUREMENT_ID (omitted when empty).
 import { readFileSync, writeFileSync } from "node:fs";
-import { loadLayeredEnv } from "./lib/load-env.mjs";
 
-const mode = process.argv[2] ?? "prod";
-try {
-  loadLayeredEnv(mode);
-} catch (e) {
-  console.error(e.message);
+const env = process.env;
+const fail = (message) => {
+  console.error(message);
   process.exit(1);
-}
-
-const keys = {
-  apiKey: "FIREBASE_API_KEY",
-  authDomain: "FIREBASE_AUTH_DOMAIN",
-  projectId: "FIREBASE_PROJECT_ID",
-  storageBucket: "FIREBASE_STORAGE_BUCKET",
-  messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID",
-  appId: "FIREBASE_APP_ID",
-  measurementId: "FIREBASE_MEASUREMENT_ID",
-  databaseURL: "FIREBASE_DATABASE_URL",
+};
+const readJson = (file) => {
+  try {
+    return JSON.parse(readFileSync(file, "utf8"));
+  } catch (e) {
+    return fail(`Cannot read ${file}: ${e.message}`);
+  }
 };
 
-const firebaseConfig = {};
-const missing = [];
-for (const [key, envName] of Object.entries(keys)) {
-  if (process.env[envName]) firebaseConfig[key] = process.env[envName];
-  else missing.push(envName);
+const useEmulators = env.FIREBASE_USE_EMULATORS === "true";
+
+// Project id: the only place it is defined is .firebaserc
+const alias = useEmulators ? "dev" : "default";
+const projectId = readJson(".firebaserc").projects?.[alias] ?? fail(`Missing projects.${alias} in .firebaserc`);
+if (useEmulators && !projectId.startsWith("demo-")) {
+  fail(`.firebaserc alias "dev" must start with "demo-" when emulators are enabled (got "${projectId}")`);
 }
-if (missing.length) {
-  console.error(`Missing env vars: ${missing.join(", ")}`);
-  process.exit(1);
+if (!useEmulators && projectId.startsWith("demo-")) {
+  fail(`.firebaserc alias "default" must not be a demo project (got "${projectId}")`);
 }
 
+const missing = ["FIREBASE_API_KEY", "FIREBASE_APP_ID"].filter((name) => !env[name]);
+if (missing.length) fail(`Missing env vars: ${missing.join(", ")}`);
+
+const appId = env.FIREBASE_APP_ID;
+const messagingSenderId = env.FIREBASE_MESSAGING_SENDER_ID || appId.split(":")[1];
+if (!messagingSenderId) fail(`Cannot derive messagingSenderId from FIREBASE_APP_ID ("${appId}")`);
+
+let databaseURL = env.FIREBASE_DATABASE_URL;
+if (!databaseURL) {
+  const region = env.FIREBASE_DATABASE_REGION;
+  if (!region) fail("Set FIREBASE_DATABASE_REGION (e.g. europe-west1) or FIREBASE_DATABASE_URL");
+  databaseURL =
+    region === "us-central1"
+      ? `https://${projectId}-default-rtdb.firebaseio.com`
+      : `https://${projectId}-default-rtdb.${region}.firebasedatabase.app`;
+}
+
+const firebaseConfig = {
+  apiKey: env.FIREBASE_API_KEY,
+  authDomain: env.FIREBASE_AUTH_DOMAIN || `${projectId}.firebaseapp.com`,
+  projectId,
+  storageBucket: env.FIREBASE_STORAGE_BUCKET || `${projectId}.firebasestorage.app`,
+  messagingSenderId,
+  appId,
+  ...(env.FIREBASE_MEASUREMENT_ID && { measurementId: env.FIREBASE_MEASUREMENT_ID }),
+  databaseURL,
+};
+
 let emulators = null;
-if (process.env.FIREBASE_USE_EMULATORS === "true") {
-  const ports = JSON.parse(readFileSync("firebase.json", "utf8")).emulators ?? {};
-  const port = (name) => {
-    if (!ports[name]?.port) {
-      console.error(`Missing emulators.${name}.port in firebase.json`);
-      process.exit(1);
-    }
-    return ports[name].port;
-  };
+if (useEmulators) {
+  const ports = readJson("firebase.json").emulators ?? {};
+  const port = (name) => ports[name]?.port ?? fail(`Missing emulators.${name}.port in firebase.json`);
   emulators = {
-    host: process.env.FIREBASE_EMULATOR_HOST || "localhost",
+    host: env.FIREBASE_EMULATOR_HOST || "localhost",
     authPort: port("auth"),
     firestorePort: port("firestore"),
     databasePort: port("database"),
@@ -54,8 +84,8 @@ if (process.env.FIREBASE_USE_EMULATORS === "true") {
 
 writeFileSync(
   "public/firebase-config.generated.js",
-  `// AUTO-GENERATED by scripts/generate-firebase-config.mjs (mode: ${mode}). Do not edit.\n` +
+  `// AUTO-GENERATED by scripts/generate-firebase-config.mjs. Do not edit.\n` +
     `export const firebaseConfig = ${JSON.stringify(firebaseConfig, null, 2)};\n` +
     `export const emulators = ${JSON.stringify(emulators, null, 2)};\n`
 );
-console.log(`firebase-config.generated.js written (mode: ${mode}, emulators: ${emulators ? "on" : "off"})`);
+console.log(`firebase-config.generated.js written (project: ${projectId}, emulators: ${emulators ? "on" : "off"})`);
