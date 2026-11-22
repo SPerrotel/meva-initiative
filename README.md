@@ -77,7 +77,8 @@ npm run dev         # développement : config (dev) + SDK + CSS, puis Tailwind e
 npm run build       # build de production : config (prod) + SDK + CSS
 npm run preview     # build de production, puis Firebase Hosting en local (sans émulateurs)
 
-npm run test:rules  # tests des règles de sécurité Firestore
+npm run test:rules  # tests des règles de sécurité Firestore (tests/security/) ; démarre son propre émulateur Firestore
+                    # (port de firebase.json) : arrêter `npm run dev` avant, sinon le port est occupé
 ```
 
 ### Scripts npm
