@@ -65,12 +65,17 @@ node -v       # doit afficher v26.13.1
 npm install
 ```
 
-### 4. Lancer le projet
+Le projet est prêt : voir la section **Développement** ci-dessous pour le lancer.
+
+## 🧑‍💻 Développement
+
+### Lancer le projet
 
 ```bash
 npm run dev:css     # compile Tailwind CSS en mode watch
-npm run serve       # génère la config (prod) et démarre Firebase Hosting en local
-npm run dev         # génère la config (dev) et lance les émulateurs Firebase (auth, firestore, database, hosting)
+npm run build       # config (prod) + bundle du SDK Firebase + CSS
+npm run serve       # build puis démarre Firebase Hosting en local
+npm run dev         # génère la config (dev), bundle le SDK Firebase et lance les émulateurs Firebase (auth, firestore, database, hosting)
                     # -> site disponible sur http://localhost:8000 (port défini dans firebase.json > emulators.hosting)
 
 npm run test:rules  # exécute les tests des règles de sécurité Firestore
@@ -97,3 +102,12 @@ Ces valeurs sont publiques (config web Firebase) : elles servent à changer d'en
 - `FIREBASE_USE_EMULATORS=true` (`.env.dev`) active la connexion du site aux émulateurs ; `FIREBASE_EMULATOR_HOST` définit l'hôte (défaut `localhost`).
 
 `npm run serve` et `firebase deploy` (hook `predeploy`) régénèrent toujours la config de **prod**.
+
+### SDK Firebase (bundle esbuild)
+
+Le SDK Firebase n'est plus chargé depuis `gstatic.com` : il est installé via npm (version **exacte** dans `package.json`) et bundlé par [esbuild](https://esbuild.github.io/) dans `public/vendor/firebase/` (ignoré par git) avec `npm run build:js`.
+
+- Points d'entrée : `src/js/firebase/firebase-{app,auth,firestore,database}.js` (un simple `export * from "firebase/<produit>"`). Les pages importent `/vendor/firebase/firebase-<produit>.js`, comme avant avec les URLs gstatic.
+- Le code commun (dont `firebase-app`) est dans un chunk partagé : une seule instance de l'app Firebase pour toutes les pages.
+- Pour mettre à jour : `npm install --save-exact firebase@<version>` (garder `@firebase/rules-unit-testing` compatible avec la version majeure de `firebase`), puis `npm run build:js`.
+- Cache (`firebase.json`) : les points d'entrée sont en `no-cache`, les chunks (nom hashé) en `immutable`, pour éviter un mélange de versions après un déploiement.

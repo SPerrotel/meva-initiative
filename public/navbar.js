@@ -161,9 +161,9 @@ async function initAuthAndPresence() {
 
   try {
     const { db, auth, rtdb } = await import("/firebase-config.js");
-    const { onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-    const { ref, onValue, set, onDisconnect, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js");
+    const { onAuthStateChanged } = await import("/vendor/firebase/firebase-auth.js");
+    const { doc, getDoc } = await import("/vendor/firebase/firebase-firestore.js");
+    const { ref, onValue, set, onDisconnect, serverTimestamp } = await import("/vendor/firebase/firebase-database.js");
 
     const authBtn = document.getElementById("nav-auth-btn");
     const adminBtn = document.getElementById("nav-admin-btn");

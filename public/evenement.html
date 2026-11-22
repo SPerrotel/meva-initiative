@@ -31,10 +31,10 @@
 
   <script type="module">
     import { db, auth } from "./firebase-config.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
     import { 
       collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, query, where 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    } from "/vendor/firebase/firebase-firestore.js";
 
     const params = new URLSearchParams(window.location.search);
     let eventId = params.get("id") || localStorage.getItem("meva_current_event");

@@ -14,3 +14,4 @@ firebase-debug.log*
 firestore-debug.log*
 database-debug.log*
 public/firebase-config.generated.js
+public/vendor/

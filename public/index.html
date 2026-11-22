@@ -114,8 +114,8 @@
   <script type="module">
     import { getEvents, getNews, getStores } from "./store.js";
     import { db, auth } from "./firebase-config.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
+    import { doc, getDoc } from "/vendor/firebase/firebase-firestore.js";
 
     // Gestion Auth
     const authBtn = document.getElementById("nav-auth-btn");

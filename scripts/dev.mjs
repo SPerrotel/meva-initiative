@@ -10,5 +10,6 @@ if (!projectId?.startsWith("demo-")) {
 }
 
 execFileSync("node", ["scripts/generate-firebase-config.mjs", "dev"], { stdio: "inherit" });
+execFileSync("node", ["scripts/build-firebase.mjs"], { stdio: "inherit" });
 const child = spawn("firebase", ["emulators:start", "--project", projectId], { stdio: "inherit" });
 child.on("exit", (code) => process.exit(code ?? 0));

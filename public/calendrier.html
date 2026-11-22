@@ -92,8 +92,8 @@
   <script type="module">
     import { getEvents, getStores } from "./store.js";
     import { db, auth } from "./firebase-config.js";
-    import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { collection, query, where, getDocs } from "/vendor/firebase/firebase-firestore.js";
+    import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
 
     let rawEvents = [];
     let userTickets = [];

@@ -1,5 +1,5 @@
 // Configuration et initialisation Firebase MEVA
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp } from "/vendor/firebase/firebase-app.js";
 import { 
   getAuth, 
   GoogleAuthProvider, 
@@ -9,7 +9,7 @@ import {
   signOut, 
   onAuthStateChanged,
   connectAuthEmulator
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+} from "/vendor/firebase/firebase-auth.js";
 import { 
   getFirestore, 
   collection, 
@@ -24,8 +24,8 @@ import {
   orderBy, 
   onSnapshot,
   connectFirestoreEmulator
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getDatabase, connectDatabaseEmulator } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+} from "/vendor/firebase/firebase-firestore.js";
+import { getDatabase, connectDatabaseEmulator } from "/vendor/firebase/firebase-database.js";
 
 import { firebaseConfig, emulators } from "./firebase-config.generated.js";
 
