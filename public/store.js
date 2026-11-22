@@ -218,7 +218,7 @@ export const DEFAULT_ASSO_CONFIG = {
 // réseau qui se réveille), getDocs ne rejette pas : il répond aussitôt depuis le cache mémoire, vide.
 // On le traite comme une erreur pour que l'appelant retombe sur la copie localStorage au lieu de croire
 // la collection vide.
-async function getServerDocs(ref) {
+export async function getServerDocs(ref) {
   const snap = await getDocs(ref);
   if (snap.metadata.fromCache) {
     const err = new Error("Firestore injoignable (résultat issu du cache)");
