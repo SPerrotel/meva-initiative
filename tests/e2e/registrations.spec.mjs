@@ -1,29 +1,9 @@
 // The `registrations` tickets are the only source of truth for who is registered and how many places are taken:
 // the rules let only admins write an event, so its `participants`/`count` only reflect the admins' actions.
 import { randomUUID } from 'node:crypto'
-import { newUser, register } from './auth.mjs'
-import { seedDoc } from './emulator.mjs'
+import { registerUser } from './auth.mjs'
+import { seedDoc, seedEvent } from './emulator.mjs'
 import { expect, test } from './fixtures.mjs'
-
-// Registers a new user and returns their uid, once the profile shows the restored session.
-async function registerUser(page) {
-  await register(page, newUser())
-  await expect(page).toHaveURL(/\/profil/)
-  await expect(page.locator('#input-pseudo')).not.toHaveValue('')
-  // Same module instance as the page's: the signed-in user.
-  return page.evaluate(async () => (await import('/firebase-config.js')).auth.currentUser.uid)
-}
-
-// Far in the future, so it never shows up in the months other tests display. Public, 4 places.
-const seedEvent = (title, participants = []) =>
-  seedDoc('events', {
-    title: { stringValue: title },
-    location: { stringValue: 'MEVA' },
-    startDate: { stringValue: '2099-12-31' },
-    capacity: { integerValue: '4' },
-    participants: { arrayValue: { values: participants.map((uid) => ({ stringValue: uid })) } },
-    count: { integerValue: String(participants.length) },
-  })
 
 const calendarRow = (page, title) => page.locator('#events-list a', { hasText: title })
 
