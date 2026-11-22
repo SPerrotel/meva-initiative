@@ -333,6 +333,12 @@ export async function updateEvent(id, updatedData) {
   } catch (err) {
     console.error("Erreur lors de la mise à jour de l'événement (Firestore):", err);
   }
+  updateLocalEvent(id, updatedData);
+}
+
+// Met à jour un événement dans la copie locale seulement (repli hors ligne de getEvents), après une écriture
+// Firestore faite ailleurs. Ne jamais effacer cette copie : getEvents la remplace à chaque lecture réussie.
+export function updateLocalEvent(id, updatedData) {
   const list = JSON.parse(localStorage.getItem("meva_events") || "[]");
   const idx = list.findIndex(e => e.id === id);
   if (idx !== -1) {

@@ -487,7 +487,7 @@
       getNews, saveNews, deleteNews, updateNews, 
       getStores, saveStore, deleteStore, updateStore, 
       getHomeConfig, saveHomeConfig, moveEventOrder, moveStoreOrder, 
-      getAssoConfig, saveAssoConfig 
+      getAssoConfig, saveAssoConfig, updateLocalEvent 
     } from "../store.js";
     import { db, auth } from "../firebase-config.js";
     import { 
@@ -993,8 +993,8 @@
                 evt.participants = participantIds;
                 evt.count = participantIds.length;
 
-                // 4. Purge du cache local pour que le calendrier prenne le bon compte immédiatement
-                localStorage.removeItem("meva_events");
+                // 4. Nouveau total dans la copie locale, pour le repli hors ligne du calendrier
+                updateLocalEvent(evt.id, { participants: participantIds, count: participantIds.length });
 
                 await renderAdminLists();
                 setTimeout(() => {
