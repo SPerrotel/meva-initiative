@@ -55,6 +55,28 @@ async function loginAsAdmin(page, email) {
 }
 
 // Every project writes the same values: tests running in parallel cannot see each other's data.
+// The home texts are shared by the home page test and the admin save test, which both write config_home/home.
+const HOME_TEXTS = {
+  tagline: 'MEVA Initiative (e2e)',
+  title: 'Accueil <span class="text-meva-accent">e2e</span>',
+  subtitle: "Sous-titre de l'accueil enregistré dans Firestore.",
+}
+
+test('home page shows the texts stored in Firestore', async ({ page }) => {
+  await writeDoc('config_home/home', {
+    tagline: { stringValue: HOME_TEXTS.tagline },
+    title: { stringValue: HOME_TEXTS.title },
+    subtitle: { stringValue: HOME_TEXTS.subtitle },
+  })
+
+  await page.goto('/')
+
+  await expect(page.locator('#home-tagline')).toHaveText(HOME_TEXTS.tagline)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Accueil e2e')
+  await expect(page.locator('#home-title .text-meva-accent')).toHaveText('e2e')
+  await expect(page.locator('#home-subtitle')).toHaveText(HOME_TEXTS.subtitle)
+})
+
 test('association page shows the texts stored in Firestore', async ({ page }) => {
   const title = "L'association MEVA Initiative (e2e)"
   await writeDoc('config_asso/asso', {
@@ -81,7 +103,9 @@ test('an admin saves the home page texts', async ({ page }) => {
   await expect(page.locator('#home-tagline')).not.toHaveValue('')
   await page.locator('#btn-tab-home').click()
 
-  await page.locator('#home-tagline').fill(`MEVA Initiative ${randomUUID().slice(0, 6)}`)
+  await page.locator('#home-tagline').fill(HOME_TEXTS.tagline)
+  await page.locator('#home-title').fill(HOME_TEXTS.title)
+  await page.locator('#home-subtitle').fill(HOME_TEXTS.subtitle)
   await page.locator('#form-home-config').getByRole('button', { name: 'Enregistrer' }).click()
 
   await expect.poll(() => dialogs).toContain("Page d'accueil mise à jour !")
