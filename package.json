@@ -2,6 +2,9 @@
   "name": "meva-initiative",
   "version": "1.0.0",
   "description": "Portail officiel MEVA Initiative - Star Wars: Unlimited",
+  "engines": {
+    "node": ">=26.13.1"
+  },
   "scripts": {
     "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
     "build:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
