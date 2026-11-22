@@ -6,13 +6,12 @@
   <title>Calendrier des tournois — MEVA Initiative</title>
   <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
   <meta name="description" content="Retrouvez tous les événements de la ligue et des boutiques partenaires Star Wars: Unlimited.">
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
 
   <!-- Contenu Principal -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <main class="grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
     <div class="space-y-2">
       <h1 class="text-2xl md:text-3xl font-extrabold text-white">Calendrier des tournois</h1>
@@ -28,7 +27,7 @@
       </div>
 
       <div class="w-full sm:w-auto">
-        <select id="store-filter" class="w-full sm:w-auto bg-meva-bg border border-meva-border rounded-lg px-3 py-1.5 text-xs text-meva-textMain focus:outline-none focus:border-meva-accent">
+        <select id="store-filter" class="w-full sm:w-auto bg-meva-bg border border-meva-border rounded-lg px-3 py-1.5 text-xs text-meva-textMain focus:outline-hidden focus:border-meva-accent">
           <option value="all">Toutes les boutiques</option>
         </select>
       </div>
@@ -320,8 +319,8 @@
         const b = parseInt(hex.slice(5, 7), 16) || 246;
 
         const tagBadge = evt.isPrivate
-          ? `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-900/40 text-[#B8A9F5] border border-[#B8A9F5]/30">🔒 Événement MEVA</span>`
-          : `<span class="px-2 py-0.5 rounded text-[10px] font-semibold border" style="color: ${hex}; background-color: rgba(${r}, ${g}, ${b}, 0.15); border-color: rgba(${r}, ${g}, ${b}, 0.35);">${evt.location || "Public"}</span>`;
+          ? `<span class="px-2 py-0.5 rounded-sm text-[10px] font-semibold bg-purple-900/40 text-meva-accent border border-meva-accent/30">🔒 Événement MEVA</span>`
+          : `<span class="px-2 py-0.5 rounded-sm text-[10px] font-semibold border" style="color: ${hex}; background-color: rgba(${r}, ${g}, ${b}, 0.15); border-color: rgba(${r}, ${g}, ${b}, 0.35);">${evt.location || "Public"}</span>`;
 
         return `
           <a
@@ -382,7 +381,7 @@
       let buttonsHtml = cachedStores.map(store => {
         const color = store.color || getStoreHexColor(store.name);
         return `
-          <button data-store="${store.name}" class="store-filter-btn flex items-center gap-2 px-3 py-1.5 bg-meva-surface hover:bg-meva-border border border-meva-border rounded-lg chamfered-card flex-grow justify-center transition-colors">
+          <button data-store="${store.name}" class="store-filter-btn flex items-center gap-2 px-3 py-1.5 bg-meva-surface hover:bg-meva-border border border-meva-border rounded-lg chamfered-card grow justify-center transition-colors">
             <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${color};"></span>
             <span class="text-[10px] font-bold text-white">${store.name}</span>
           </button>
@@ -391,7 +390,7 @@
 
       // 2. Bouton fixe de l'Association MEVA
       buttonsHtml += `
-        <button data-store="MEVA" class="store-filter-btn flex items-center gap-2 px-3 py-1.5 bg-meva-surface hover:bg-meva-border border border-meva-border rounded-lg chamfered-card flex-grow justify-center transition-colors">
+        <button data-store="MEVA" class="store-filter-btn flex items-center gap-2 px-3 py-1.5 bg-meva-surface hover:bg-meva-border border border-meva-border rounded-lg chamfered-card grow justify-center transition-colors">
           <span class="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]"></span>
           <span class="text-[10px] font-bold text-white">MEVA</span>
         </button>
@@ -399,7 +398,7 @@
 
       // 3. Bouton fixe "Tous les lieux"
       buttonsHtml += `
-        <button data-store="all" class="store-filter-btn flex items-center gap-2 px-3 py-1.5 bg-meva-surface hover:bg-meva-border border border-meva-border rounded-lg chamfered-card flex-grow justify-center transition-colors">
+        <button data-store="all" class="store-filter-btn flex items-center gap-2 px-3 py-1.5 bg-meva-surface hover:bg-meva-border border border-meva-border rounded-lg chamfered-card grow justify-center transition-colors">
           <span class="text-[10px] font-bold text-white">Tous les lieux</span>
         </button>
       `;

@@ -6,26 +6,18 @@
   <title>Hall of Fame & Ligues — MEVA Initiative</title>
   <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
   <link rel="stylesheet" href="../css/style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            meva: {
-              bg: '#0B0D14',
-              surface: '#151822',
-              border: '#2A2E3D',
-              accent: '#8B5CF6',
-              accentHover: '#7C3AED',
-              textMain: '#E2E8F0',
-              textMuted: '#94A3B8'
-            }
-          }
-        }
-      }
+  <style>
+    /* Palette propre à cette page (surcharge du thème défini dans src/css/input.css) */
+    :root {
+      --color-meva-bg: #0B0D14;
+      --color-meva-surface: #151822;
+      --color-meva-border: #2A2E3D;
+      --color-meva-accent: #8B5CF6;
+      --color-meva-accentHover: #7C3AED;
+      --color-meva-textMain: #E2E8F0;
+      --color-meva-textMuted: #94A3B8;
     }
-  </script>
+  </style>
 </head>
 <body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
 
@@ -35,7 +27,7 @@
   <!-- Navbar -->
   <script src="/navbar.js"></script>
 
-  <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <main class="grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     
     <!-- En-tête -->
     <div class="text-center space-y-2">
@@ -297,7 +289,7 @@
             <td class="p-3 text-center align-middle text-meva-textMuted font-medium">${player.weeksPlayedCount}</td>
             <td class="p-3 text-center align-middle text-meva-textMuted font-medium">${player.totalWins}</td>
             <td class="p-3 text-right align-middle">
-              <span class="inline-flex items-baseline gap-1 text-sm font-black text-meva-accent font-mono bg-purple-950/40 border border-meva-accent/30 px-2.5 py-1 rounded-md whitespace-nowrap shadow-sm shadow-purple-900/20">
+              <span class="inline-flex items-baseline gap-1 text-sm font-black text-meva-accent font-mono bg-purple-950/40 border border-meva-accent/30 px-2.5 py-1 rounded-md whitespace-nowrap shadow-xs shadow-purple-900/20">
                 <span>${player.officialPoints}</span><span class="text-[10px] uppercase font-bold text-meva-accent/70 tracking-wider">pts</span>
               </span>
             </td>

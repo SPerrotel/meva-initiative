@@ -7,26 +7,18 @@
   <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
   <meta name="description" content="Découvrez l'association MEVA Initiative et rejoignez la communauté Star Wars: Unlimited.">
   <link rel="stylesheet" href="./css/style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            meva: {
-              bg: '#0B0D14',
-              surface: '#151822',
-              border: '#2A2E3D',
-              accent: '#8B5CF6',
-              accentHover: '#7C3AED',
-              textMain: '#E2E8F0',
-              textMuted: '#94A3B8'
-            }
-          }
-        }
-      }
+  <style>
+    /* Palette propre à cette page (surcharge du thème défini dans src/css/input.css) */
+    :root {
+      --color-meva-bg: #0B0D14;
+      --color-meva-surface: #151822;
+      --color-meva-border: #2A2E3D;
+      --color-meva-accent: #8B5CF6;
+      --color-meva-accentHover: #7C3AED;
+      --color-meva-textMain: #E2E8F0;
+      --color-meva-textMuted: #94A3B8;
     }
-  </script>
+  </style>
 </head>
 <body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
 
@@ -34,20 +26,20 @@
   <div class="fixed inset-0 bg-[#0F1117]/85 z-[-1] pointer-events-none"></div>
 
   <!-- Contenu Principal -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <main class="grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     
     <!-- Bannière Association : Logo MEVA à gauche + Textes à droite -->
     <section class="bg-meva-surface border border-meva-border rounded-2xl chamfered-card p-8 md:p-12 shadow-xl shadow-black/40 flex flex-col md:flex-row items-center gap-8 md:gap-12">
       
       <!-- Logo MEVA Initiative à gauche -->
-      <div class="flex-shrink-0 flex items-center justify-center">
+      <div class="shrink-0 flex items-center justify-center">
         <img src="./assets/images/meva_initiative_logo_logo.png" 
              alt="MEVA Initiative" 
              class="h-32 md:h-44 w-auto object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] transition-transform hover:scale-105">
       </div>
 
       <!-- Textes à droite -->
-      <div class="flex-grow space-y-3 text-center md:text-left">
+      <div class="grow space-y-3 text-center md:text-left">
         <h1 id="asso-display-title" class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
           L'association MEVA Initiative
         </h1>
@@ -86,7 +78,7 @@
       <div class="space-y-6">
         <div class="bg-meva-surface border border-meva-accent/40 p-6 md:p-8 rounded-2xl chamfered-card space-y-5 flex flex-col justify-between h-full">
           <div class="space-y-3">
-            <span id="asso-display-badge" class="text-[10px] uppercase font-bold tracking-widest text-meva-accent bg-purple-900/40 border border-meva-accent/30 px-2.5 py-1 rounded">Adhésion annuelle</span>
+            <span id="asso-display-badge" class="text-[10px] uppercase font-bold tracking-widest text-meva-accent bg-purple-900/40 border border-meva-accent/30 px-2.5 py-1 rounded-sm">Adhésion annuelle</span>
             <h3 id="asso-display-card-title" class="text-xl font-bold text-white leading-snug">Rejoindre MEVA Initiative sur HelloAsso</h3>
             <p id="asso-display-card-desc" class="text-xs text-meva-textMuted leading-relaxed">
               Adhérer permet d'accéder aux tournois exclusifs réservés aux membres, de figurer au classement officiel de la ligue et de soutenir le développement du jeu en Haute-Savoie.

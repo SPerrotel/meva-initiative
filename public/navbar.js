@@ -9,7 +9,7 @@ const headerHTML = `
   <header class="sticky top-0 z-50 w-full h-[104px] mb-8 md:mb-12 drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]">
     
     <!-- Ligne droite violette et fond qui font toute la largeur de l'écran -->
-    <div class="absolute top-0 left-0 w-full h-[64px] bg-[#0F1117]/95 backdrop-blur-md border-b-[2px] border-meva-accent z-0"></div>
+    <div class="absolute top-0 left-0 w-full h-[64px] bg-meva-bg/95 backdrop-blur-md border-b-2 border-meva-accent z-0"></div>
 
     <!-- Conteneur central aligné sur le reste de ton site -->
     <div class="max-w-7xl mx-auto h-[64px] relative z-40 flex items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -18,7 +18,7 @@ const headerHTML = `
       <div class="absolute top-0 left-4 sm:left-6 lg:left-8 h-[104px] w-[180px] sm:w-[260px] z-10">
         
         <!-- Fond qui masque la ligne droite arrière pour "creuser" le cockpit -->
-        <div class="absolute inset-0 bg-[#0F1117]/95 backdrop-blur-md"
+        <div class="absolute inset-0 bg-meva-bg/95 backdrop-blur-md"
              style="clip-path: polygon(0 0, 100% 0, 100% 64px, calc(100% - 40px) 104px, 0 104px);"></div>
         
         <!-- Trait 100% Violet qui fait la forme du biseau (Mobile) -->
@@ -50,16 +50,16 @@ const headerHTML = `
         <a href="/boutiques.html" class="hover:text-meva-textMain transition-colors">Boutiques</a>
         <a href="/association.html" class="hover:text-meva-textMain transition-colors">Association</a>
         <a href="/actualites.html" class="hover:text-meva-textMain transition-colors">Actualités</a>
-        <a href="/admin/dashboard.html" id="nav-admin-btn" class="${cachedAdmin ? '' : 'hidden'} text-meva-accent font-semibold px-2 py-0.5 rounded bg-purple-900/30 border border-meva-accent/30 hover:bg-meva-accent hover:text-meva-bg transition-colors">Espace Orga ↗</a>
+        <a href="/admin/dashboard.html" id="nav-admin-btn" class="${cachedAdmin ? '' : 'hidden'} text-meva-accent font-semibold px-2 py-0.5 rounded-sm bg-purple-900/30 border border-meva-accent/30 hover:bg-meva-accent hover:text-meva-bg transition-colors">Espace Orga ↗</a>
       </nav>
 
       <div class="flex items-center gap-3">
         <a href="${cachedAuth ? '/profil.html' : '/connexion.html'}" id="nav-auth-btn" class="hidden sm:flex items-center gap-2 text-xs font-medium text-meva-textMain hover:text-meva-accent transition-colors bg-meva-surface border border-meva-border px-3 py-1.5 rounded-lg">
           <span>${cachedAuth ? 'Profil' : 'Connexion'}</span>
-          <span id="nav-member-badge" class="${cachedMember ? '' : 'hidden'} px-1.5 py-0.5 rounded text-[10px] font-semibold bg-green-950/40 text-green-400 border border-green-800/40">Membre MEVA</span>
+          <span id="nav-member-badge" class="${cachedMember ? '' : 'hidden'} px-1.5 py-0.5 rounded-sm text-[10px] font-semibold bg-green-950/40 text-green-400 border border-green-800/40">Membre MEVA</span>
         </a>
 
-        <button id="btn-mobile-menu" aria-label="Menu" class="md:hidden w-10 h-10 bg-meva-surface border border-meva-border rounded-lg flex items-center justify-center text-white hover:text-meva-accent focus:outline-none">
+        <button id="btn-mobile-menu" aria-label="Menu" class="md:hidden w-10 h-10 bg-meva-surface border border-meva-border rounded-lg flex items-center justify-center text-white hover:text-meva-accent focus:outline-hidden">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
@@ -68,7 +68,7 @@ const headerHTML = `
     </div>
 
     <!-- Menu Déroulant Mobile -->
-    <div id="mobile-menu" class="hidden md:hidden border-b border-meva-border bg-[#0F1117] px-6 pt-14 pb-6 absolute top-[64px] left-0 w-full z-20 shadow-2xl text-center space-y-4">
+    <div id="mobile-menu" class="hidden md:hidden border-b border-meva-border bg-meva-bg px-6 pt-14 pb-6 absolute top-[64px] left-0 w-full z-20 shadow-2xl text-center space-y-4">
       
       <!-- Liens centrés -->
       <div class="flex flex-col items-center space-y-3 text-base font-bold">
@@ -86,7 +86,7 @@ const headerHTML = `
         <span id="mobile-member-badge" class="${cachedMember ? '' : 'hidden'} px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-green-950/80 text-green-400 border border-green-500/30 uppercase tracking-wider">
           Adhérent
         </span>
-        <a href="${cachedAuth ? '/profil.html' : '/connexion.html'}" id="mobile-auth-btn" class="flex items-center justify-center w-full py-3 rounded-xl bg-meva-accent text-[#0F1117] font-black text-base hover:bg-meva-accentHover transition-colors shadow-lg">
+        <a href="${cachedAuth ? '/profil.html' : '/connexion.html'}" id="mobile-auth-btn" class="flex items-center justify-center w-full py-3 rounded-xl bg-meva-accent text-meva-bg font-black text-base hover:bg-meva-accentHover transition-colors shadow-lg">
           <span>${cachedAuth ? 'Mon Profil' : 'Connexion'}</span>
         </a>
       </div>

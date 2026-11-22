@@ -10,17 +10,17 @@
 <body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
 
   <!-- Calque d'assombrissement fixe (z-[-1]) pour garder les textes et formulaires lisibles -->
-  <div class="fixed inset-0 bg-[#0F1117]/85 z-[-1] pointer-events-none"></div>
+  <div class="fixed inset-0 bg-meva-bg/85 z-[-1] pointer-events-none"></div>
 
   <!-- HEADER ADMIN (Grand logo net, barre adaptative) -->
   <header class="sticky top-0 z-50 w-full mb-8 md:mb-12 shadow-xl shadow-black/50">
-    <div class="w-full bg-[#0F1117]/95 backdrop-blur-md border-b-[2px] border-meva-accent">
+    <div class="w-full bg-meva-bg/95 backdrop-blur-md border-b-2 border-meva-accent">
       <!-- On utilise "py-4" au lieu d'une hauteur fixe pour ne pas écraser l'image -->
       <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         
         <!-- Logo + Badge Espace Orga côte à côte -->
         <div class="flex items-center gap-4 sm:gap-6">
-          <a href="../index.html" class="flex-shrink-0 transition-transform hover:scale-105">
+          <a href="../index.html" class="shrink-0 transition-transform hover:scale-105">
             <!-- Logo géant et net (h-24 à h-28) -->
             <img src="../assets/images/meva_initiative_logo_logo.png" 
                  alt="MEVA Initiative" 
@@ -28,15 +28,15 @@
           </a>
           
           <div class="flex flex-col">
-            <span class="hidden sm:block text-base md:text-lg font-black tracking-widest text-white uppercase drop-shadow">MEVA INITIATIVE</span>
-            <span class="mt-1 px-2.5 py-1 rounded text-xs md:text-sm font-bold uppercase tracking-widest bg-purple-900/60 text-meva-accent border border-meva-accent/40 w-max shadow-sm">
+            <span class="hidden sm:block text-base md:text-lg font-black tracking-widest text-white uppercase drop-shadow-sm">MEVA INITIATIVE</span>
+            <span class="mt-1 px-2.5 py-1 rounded-sm text-xs md:text-sm font-bold uppercase tracking-widest bg-purple-900/60 text-meva-accent border border-meva-accent/40 w-max shadow-xs">
               Espace Orga
             </span>
           </div>
         </div>
 
         <!-- Bouton retour -->
-        <a href="../index.html" class="flex items-center gap-2 text-xs font-medium text-meva-textMain hover:text-white transition-colors bg-meva-surface border border-meva-border px-4 py-2.5 rounded-lg hover:border-meva-accent shadow-sm shrink-0">
+        <a href="../index.html" class="flex items-center gap-2 text-xs font-medium text-meva-textMain hover:text-white transition-colors bg-meva-surface border border-meva-border px-4 py-2.5 rounded-lg hover:border-meva-accent shadow-xs shrink-0">
           <span>← Retour public</span>
         </a>
         
@@ -44,7 +44,7 @@
     </div>
   </header>
 
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative">
+  <main class="grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative">
     <div>
       <h1 class="text-2xl md:text-3xl font-extrabold text-white">Tableau de bord de gestion</h1>
       <p class="text-xs md:text-sm text-meva-textMuted">Gestion directe de l'accueil, des événements, actualités et boutiques.</p>
@@ -69,15 +69,15 @@
         <form id="form-home-config" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div class="space-y-1">
             <label class="text-meva-textMuted">Surtitre (badge)</label>
-            <input type="text" id="home-tagline" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="home-tagline" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Titre principal</label>
-            <input type="text" id="home-title" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="home-title" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Sous-titre / Description</label>
-            <input type="text" id="home-subtitle" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="home-subtitle" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="md:col-span-2 pt-2 flex items-center gap-3">
             <button type="submit" class="py-2.5 px-6 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold rounded-lg transition-colors">Enregistrer</button>
@@ -93,27 +93,27 @@
         <form id="form-add-event" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Titre du tournoi</label>
-            <input type="text" id="ev-title" required placeholder="Ex: Store Showdown – Secrets of Power" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="ev-title" required placeholder="Ex: Store Showdown – Secrets of Power" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           
           <div class="space-y-1">
             <label class="text-meva-textMuted">Organisateur / Boutique (pour les couleurs)</label>
-            <input type="text" id="ev-location" required list="store-list" placeholder="Ex: SoukoGames ou MEVA" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="ev-location" required list="store-list" placeholder="Ex: SoukoGames ou MEVA" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
             <datalist id="store-list"></datalist>
           </div>
 
           <div class="space-y-1">
             <label class="text-meva-textMuted">Adresse réelle ou Salle (si hors magasin)</label>
-            <input type="text" id="ev-address" placeholder="Ex: Salle des fêtes d'Yvoire, Discord..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="ev-address" placeholder="Ex: Salle des fêtes d'Yvoire, Discord..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
 
           <div class="space-y-1">
             <label class="text-meva-textMuted">Date & Heure (Format : JJ MMM. AAAA • HHhMM)</label>
-            <input type="text" id="ev-date" required placeholder="Ex: Dimanche 15 nov. 2026 • 14h00" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="ev-date" required placeholder="Ex: Dimanche 15 nov. 2026 • 14h00" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Format</label>
-            <select id="ev-format" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <select id="ev-format" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
               <option value="Premier">Premier</option>
               <option value="Draft">Draft</option>
               <option value="Scellé">Scellé</option>
@@ -122,27 +122,27 @@
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Capacité maximale (places)</label>
-            <input type="number" id="ev-capacity" required value="16" min="4" max="256" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="number" id="ev-capacity" required value="16" min="4" max="256" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">PAF / Tarif (facultatif)</label>
-            <input type="text" id="ev-price" placeholder="Ex: 5€ ou Gratuit" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="ev-price" placeholder="Ex: 5€ ou Gratuit" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Lien externe officiel (Melee.gg, billetterie ou site boutique — facultatif)</label>
-            <input type="url" id="ev-melee" placeholder="https://melee.gg/Tournament/View/..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="url" id="ev-melee" placeholder="https://melee.gg/Tournament/View/..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Image du tournoi</label>
-            <input type="file" id="ev-image" accept="image/*" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-meva-textMuted file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-meva-surface file:text-meva-accent hover:file:bg-meva-border">
+            <input type="file" id="ev-image" accept="image/*" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-meva-textMuted file:mr-4 file:py-1 file:px-3 file:rounded-sm file:border-0 file:text-xs file:font-semibold file:bg-meva-surface file:text-meva-accent hover:file:bg-meva-border">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted font-semibold">Description & Détails (Lots, rondes, règles, matériel...)</label>
-            <textarea id="ev-description" rows="4" placeholder="Ex : 3 rondes suisses. Dotations pour tous les participants + cartes promo exclusives aux premiers..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="ev-description" rows="4" placeholder="Ex : 3 rondes suisses. Dotations pour tous les participants + cartes promo exclusives aux premiers..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
           <div class="space-y-2 md:col-span-2 pt-1">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" id="ev-private" class="rounded bg-meva-bg border-meva-border text-meva-accent">
+              <input type="checkbox" id="ev-private" class="rounded-sm bg-meva-bg border-meva-border text-meva-accent">
               <span class="text-white">🔒 Événement privé réservé aux adhérents MEVA</span>
             </label>
           </div>
@@ -180,13 +180,13 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div class="space-y-1">
               <label class="text-meva-textMuted text-xs font-semibold">Filtrer par boutique</label>
-              <select id="league-filter-store" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-meva-accent">
+              <select id="league-filter-store" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-meva-accent">
                 <option value="all">Toutes les boutiques</option>
               </select>
             </div>
             <div class="space-y-1">
               <label class="text-meva-textMuted text-xs font-semibold">Période</label>
-              <select id="league-filter-period" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-meva-accent">
+              <select id="league-filter-period" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-meva-accent">
                 <option value="past" selected>Événements passés uniquement (À noter)</option>
                 <option value="all">Tous les événements (Passés & À venir)</option>
               </select>
@@ -196,7 +196,7 @@
           <div class="flex flex-col sm:flex-row gap-3 items-end">
             <div class="space-y-1 flex-1">
               <label class="text-meva-textMuted text-xs font-semibold">Événement ciblé</label>
-              <select id="league-event-select" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-meva-accent">
+              <select id="league-event-select" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2.5 text-xs text-white focus:outline-hidden focus:border-meva-accent">
                 <option value="" disabled selected>-- Sélectionner un événement --</option>
               </select>
             </div>
@@ -210,7 +210,7 @@
         <div id="league-scores-container" class="hidden space-y-4 pt-4 border-t border-meva-border/50">
           <div class="flex justify-between items-center">
             <h3 class="text-sm font-bold text-white" id="league-event-title">Tournoi sélectionné</h3>
-            <span class="px-2 py-1 bg-purple-900/40 text-meva-accent rounded text-[10px] font-bold" id="league-event-store">Boutique</span>
+            <span class="px-2 py-1 bg-purple-900/40 text-meva-accent rounded-sm text-[10px] font-bold" id="league-event-store">Boutique</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -232,7 +232,7 @@
           <!-- Ajout rapide d'un joueur externe sans compte -->
           <div class="p-3 bg-meva-bg/70 border border-meva-border/60 rounded-xl flex flex-col sm:flex-row gap-3 items-center">
             <div class="flex-1 w-full">
-              <input type="text" id="input-external-player" placeholder="Ajouter un joueur externe sans compte (ex: Jean Dupont / DarkLuke)..." class="w-full bg-meva-surface border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-meva-accent">
+              <input type="text" id="input-external-player" placeholder="Ajouter un joueur externe sans compte (ex: Jean Dupont / DarkLuke)..." class="w-full bg-meva-surface border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-meva-accent">
             </div>
             <button type="button" id="btn-add-external-player" class="w-full sm:w-auto px-4 py-2 bg-green-950/40 text-green-400 border border-green-800/40 rounded-lg hover:bg-green-950/60 font-bold text-xs transition-colors whitespace-nowrap">
               + Ajouter à cet événement
@@ -255,47 +255,47 @@
         <form id="form-add-news" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted font-semibold">Titre de l'article</label>
-            <input type="text" id="nw-title" required placeholder="Ex: Lancement de la saison « Secrets of Power »" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="nw-title" required placeholder="Ex: Lancement de la saison « Secrets of Power »" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted font-semibold">Catégorie / Badge</label>
-            <input type="text" id="nw-badge" placeholder="Ex: Ligue & Tournois" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="nw-badge" placeholder="Ex: Ligue & Tournois" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted font-semibold">Auteur / Signature</label>
-            <input type="text" id="nw-author" placeholder="Ex: Staff MEVA Initiative" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="nw-author" placeholder="Ex: Staff MEVA Initiative" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted font-semibold">Date de publication (pour l'affichage et le tri)</label>
-            <input type="text" id="nw-date" placeholder="Ex: 10 novembre 2026" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="nw-date" placeholder="Ex: 10 novembre 2026" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2 pt-2 border-t border-meva-border/60">
             <label class="text-meva-textMuted font-semibold">Texte d'introduction</label>
-            <textarea id="nw-intro" rows="3" required placeholder="Paragraphe d'ouverture de l'article..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="nw-intro" rows="3" required placeholder="Paragraphe d'ouverture de l'article..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
           <div class="space-y-1 md:col-span-2 pt-2 border-t border-meva-border/60">
             <label class="text-meva-textMuted font-semibold">Titre de la liste (optionnel)</label>
-            <input type="text" id="nw-bullets-title" placeholder="Ex: Ce qui vous attend ce mois-ci :" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="nw-bullets-title" placeholder="Ex: Ce qui vous attend ce mois-ci :" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted font-semibold">Éléments de la liste (une ligne par point)</label>
-            <textarea id="nw-bullets" rows="4" placeholder="Point 1\nPoint 2" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="nw-bullets" rows="4" placeholder="Point 1\nPoint 2" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
           <div class="space-y-1 md:col-span-2 pt-2 border-t border-meva-border/60">
             <label class="text-meva-textMuted font-semibold">Titre de l'encadré important (optionnel)</label>
-            <input type="text" id="nw-box-title" placeholder="Ex: 📌 Rappel des inscriptions" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="nw-box-title" placeholder="Ex: 📌 Rappel des inscriptions" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted font-semibold">Texte de l'encadré important</label>
-            <textarea id="nw-box-text" rows="2" placeholder="Message d'alerte..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="nw-box-text" rows="2" placeholder="Message d'alerte..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
           <div class="space-y-1 md:col-span-2 pt-2 border-t border-meva-border/60">
             <label class="text-meva-textMuted font-semibold">Conclusion (optionnel)</label>
-            <textarea id="nw-outro" rows="2" placeholder="Pour échanger sur le deckbuilding..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="nw-outro" rows="2" placeholder="Pour échanger sur le deckbuilding..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
           <div class="space-y-1 md:col-span-2 pt-2 border-t border-meva-border/60">
             <label class="text-meva-textMuted font-semibold">Image d'illustration</label>
-            <input type="file" id="nw-image" accept="image/*" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-meva-textMuted file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-meva-surface file:text-meva-accent hover:file:bg-meva-border">
+            <input type="file" id="nw-image" accept="image/*" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-meva-textMuted file:mr-4 file:py-1 file:px-3 file:rounded-sm file:border-0 file:text-xs file:font-semibold file:bg-meva-surface file:text-meva-accent hover:file:bg-meva-border">
           </div>
           <div class="md:col-span-2 pt-2 flex items-center gap-3">
             <button type="submit" id="btn-submit-nw" class="py-2.5 px-6 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold rounded-lg transition-colors">Publier l'actualité</button>
@@ -316,19 +316,19 @@
         <form id="form-add-store" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Nom de la boutique</label>
-            <input type="text" id="st-name" required placeholder="Ex: SoukoGames" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="st-name" required placeholder="Ex: SoukoGames" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Ville</label>
-            <input type="text" id="st-city" required placeholder="Ex: Thonon-les-Bains (74)" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="st-city" required placeholder="Ex: Thonon-les-Bains (74)" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Horaires d'ouverture</label>
-            <input type="text" id="st-hours" required placeholder="Ex: Mar-Sam: 10h-19h" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="st-hours" required placeholder="Ex: Mar-Sam: 10h-19h" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Statut du magasin</label>
-            <select id="st-status" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <select id="st-status" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
               <option value="league_partner">Ligue et partenaire officiel</option>
               <option value="official_partner">Partenaire officiel</option>
               <option value="friend">Boutique amie</option>
@@ -337,17 +337,17 @@
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Couleur d'identification (Ligue)</label>
             <div class="flex items-center gap-3">
-              <input type="color" id="st-color" value="#8B5CF6" class="w-10 h-10 rounded cursor-pointer bg-transparent border-0 p-0">
+              <input type="color" id="st-color" value="#8B5CF6" class="w-10 h-10 rounded-sm cursor-pointer bg-transparent border-0 p-0">
               <span class="text-xs text-meva-textMuted">Utilisée sur le calendrier et les cartes d'événements.</span>
             </div>
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Site web (facultatif)</label>
-            <input type="url" id="st-website" placeholder="https://..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="url" id="st-website" placeholder="https://..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Photo de la boutique</label>
-            <input type="file" id="st-image" accept="image/*" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-meva-textMuted file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-meva-surface file:text-meva-accent hover:file:bg-meva-border">
+            <input type="file" id="st-image" accept="image/*" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-meva-textMuted file:mr-4 file:py-1 file:px-3 file:rounded-sm file:border-0 file:text-xs file:font-semibold file:bg-meva-surface file:text-meva-accent hover:file:bg-meva-border">
           </div>
           <div class="md:col-span-2 pt-2 flex items-center gap-3">
             <button type="submit" id="btn-submit-st" class="py-2.5 px-6 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold rounded-lg transition-colors">Enregistrer la boutique</button>
@@ -368,41 +368,41 @@
         <form id="form-asso-config" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Titre principal</label>
-            <input type="text" id="asso-title" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="asso-title" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Sous-titre / Accroche</label>
-            <input type="text" id="asso-subtitle" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="asso-subtitle" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Texte de présentation</label>
-            <textarea id="asso-desc" rows="4" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="asso-desc" rows="4" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
 
           <!-- Section personnalisation Adhésion HelloAsso -->
           <div class="space-y-1">
             <label class="text-meva-textMuted">Badge de l'adhésion</label>
-            <input type="text" id="asso-mem-badge" placeholder="Ex: Adhésion annuelle" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="asso-mem-badge" placeholder="Ex: Adhésion annuelle" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Titre de l'adhésion</label>
-            <input type="text" id="asso-mem-title" placeholder="Ex: Rejoindre MEVA Initiative sur HelloAsso" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="asso-mem-title" placeholder="Ex: Rejoindre MEVA Initiative sur HelloAsso" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Texte explicatif des avantages</label>
-            <textarea id="asso-mem-desc" rows="3" placeholder="Adhérer permet d'accéder aux tournois exclusifs..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="asso-mem-desc" rows="3" placeholder="Adhérer permet d'accéder aux tournois exclusifs..." class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Lien HelloAsso</label>
-            <input type="url" id="asso-helloasso" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="url" id="asso-helloasso" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1">
             <label class="text-meva-textMuted">Texte du bouton</label>
-            <input type="text" id="asso-mem-btn" placeholder="Ex: Adhérer via HelloAsso" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+            <input type="text" id="asso-mem-btn" placeholder="Ex: Adhérer via HelloAsso" class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           </div>
           <div class="space-y-1 md:col-span-2">
             <label class="text-meva-textMuted">Missions (une ligne par mission)</label>
-            <textarea id="asso-missions" rows="4" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent"></textarea>
+            <textarea id="asso-missions" rows="4" required class="w-full bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent"></textarea>
           </div>
           <div class="md:col-span-2 pt-2">
             <button type="submit" class="py-2.5 px-6 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold rounded-lg transition-colors">Enregistrer l'association</button>
@@ -428,8 +428,8 @@
         </div>
         <div id="import-report" class="hidden p-4 rounded-xl border border-meva-accent/40 bg-purple-950/20 text-xs text-white space-y-1"></div>
         <div class="flex flex-col sm:flex-row gap-3 pt-2">
-          <input type="text" id="member-search-input" placeholder="Rechercher par pseudo ou e-mail..." class="flex-1 bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-meva-accent">
-          <select id="member-filter-status" class="bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-meva-accent">
+          <input type="text" id="member-search-input" placeholder="Rechercher par pseudo ou e-mail..." class="flex-1 bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-meva-accent">
+          <select id="member-filter-status" class="bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-meva-accent">
             <option value="all">Tous les comptes</option>
             <option value="member">Adhérents uniquement</option>
             <option value="non-member">Comptes non-adhérents</option>
@@ -458,7 +458,7 @@
       <div class="bg-meva-surface border border-meva-border p-6 rounded-2xl chamfered-card space-y-4">
         <h2 class="text-lg font-bold text-white flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-meva-accent"></span>Nommer un administrateur</h2>
         <div class="flex flex-col sm:flex-row gap-3 text-xs">
-          <input type="email" id="new-admin-email" placeholder="adresse@email.com du compte existant" class="flex-1 bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-meva-accent">
+          <input type="email" id="new-admin-email" placeholder="adresse@email.com du compte existant" class="flex-1 bg-meva-bg border border-meva-border rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-meva-accent">
           <button type="button" id="btn-add-admin" class="py-2.5 px-6 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-bold rounded-lg transition-colors">Nommer Admin</button>
         </div>
       </div>
@@ -696,7 +696,7 @@
               <div class="w-14 h-14 rounded-lg bg-cover bg-center border border-meva-border shrink-0" style="background-image: url('${e.imageUrl || ''}')"></div>
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${e.isPrivate ? 'bg-purple-900/60 text-meva-accent border border-meva-accent/30' : 'bg-[#232734] text-white'}">
+                  <span class="px-2 py-0.5 rounded-sm text-[10px] font-semibold ${e.isPrivate ? 'bg-purple-900/60 text-meva-accent border border-meva-accent/30' : 'bg-meva-border text-white'}">
                     ${e.isPrivate ? '🔒 MEVA' : 'Public'}
                   </span>
                   <span class="text-meva-textMuted">${e.date}</span>
@@ -803,8 +803,8 @@
           </div>
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-1">
-              <button data-id="${s.id}" data-dir="up" class="btn-store-order px-2.5 py-1 bg-meva-bg hover:bg-meva-border border border-meva-border rounded text-white ${idx === 0 ? 'opacity-30 cursor-not-allowed' : ''}">▲</button>
-              <button data-id="${s.id}" data-dir="down" class="btn-store-order px-2.5 py-1 bg-meva-bg hover:bg-meva-border border border-meva-border rounded text-white ${idx === storeList.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}">▼</button>
+              <button data-id="${s.id}" data-dir="up" class="btn-store-order px-2.5 py-1 bg-meva-bg hover:bg-meva-border border border-meva-border rounded-sm text-white ${idx === 0 ? 'opacity-30 cursor-not-allowed' : ''}">▲</button>
+              <button data-id="${s.id}" data-dir="down" class="btn-store-order px-2.5 py-1 bg-meva-bg hover:bg-meva-border border border-meva-border rounded-sm text-white ${idx === storeList.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}">▼</button>
             </div>
             <div class="flex items-center gap-2">
               <button data-id="${s.id}" class="edit-st px-3 py-1.5 bg-meva-surface text-white border border-meva-border rounded-lg hover:border-meva-accent">Modifier</button>
@@ -922,16 +922,16 @@
               const isMem = user.roles?.member === true;
 
               return `
-                <div class="flex items-center justify-between py-2 border-b border-meva-border/40 last:border-0 hover:bg-meva-bg/50 px-3 rounded transition-colors">
+                <div class="flex items-center justify-between py-2 border-b border-meva-border/40 last:border-0 hover:bg-meva-bg/50 px-3 rounded-sm transition-colors">
                   <div class="flex flex-col">
                     <span class="font-bold text-white text-sm">${pseudo}</span>
                     <span class="text-[10px] text-meva-textMuted">${email}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isMem ? 'bg-green-950/40 text-green-400' : 'bg-[#232734] text-meva-textMuted'}">
+                    <span class="px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider ${isMem ? 'bg-green-950/40 text-green-400' : 'bg-meva-border text-meva-textMuted'}">
                       ${isMem ? 'Adhérent' : 'Visiteur'}
                     </span>
-                    <button type="button" data-uid="${uid}" class="btn-kick-user text-[11px] px-2.5 py-1 bg-red-950/30 text-red-400 border border-red-900/40 rounded flex-shrink-0 hover:bg-red-950/60 transition-colors">
+                    <button type="button" data-uid="${uid}" class="btn-kick-user text-[11px] px-2.5 py-1 bg-red-950/30 text-red-400 border border-red-900/40 rounded-sm shrink-0 hover:bg-red-950/60 transition-colors">
                       Désinscrire
                     </button>
                   </div>
@@ -947,7 +947,7 @@
 
           const addPlayerHtml = `
             <div class="mt-4 pt-4 border-t border-meva-border/50 flex flex-col sm:flex-row gap-3">
-              <select id="select-add-part-${evt.id}" class="flex-1 bg-meva-bg border border-meva-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-meva-accent">
+              <select id="select-add-part-${evt.id}" class="flex-1 bg-meva-bg border border-meva-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-hidden focus:border-meva-accent">
                 <option value="" disabled selected>-- Piocher un membre de la base de données --</option>
                 ${optionsHtml}
               </select>
@@ -1301,14 +1301,14 @@
               <div class="text-[11px] text-meva-textMuted">${u.email || u.id}</div>
             </td>
             <td class="p-3">
-              <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${isMem ? 'bg-green-950/40 text-green-400 border border-green-800/40' : 'bg-[#232734] text-meva-textMuted'}">
+              <span class="px-2 py-0.5 rounded-sm text-[10px] font-semibold ${isMem ? 'bg-green-950/40 text-green-400 border border-green-800/40' : 'bg-meva-border text-meva-textMuted'}">
                 ${isMem ? 'Adhérent' : 'Inscrit'}
               </span>
-              ${isAdmin ? `<span class="ml-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-900/60 text-meva-accent border border-meva-accent/30">Admin</span>` : ''}
+              ${isAdmin ? `<span class="ml-1 px-2 py-0.5 rounded-sm text-[10px] font-semibold bg-purple-900/60 text-meva-accent border border-meva-accent/30">Admin</span>` : ''}
             </td>
             <td class="p-3 text-[11px] text-meva-textMuted">${dateStr}</td>
             <td class="p-3 text-right">
-              <button data-uid="${u.id}" data-action="${isMem ? 'revoke' : 'grant'}" class="btn-toggle-member px-3 py-1 rounded text-[11px] font-semibold border ${isMem ? 'border-red-900/40 text-red-400 hover:bg-red-950/40' : 'border-green-800/40 text-green-400 hover:bg-green-950/40'} transition-colors">
+              <button data-uid="${u.id}" data-action="${isMem ? 'revoke' : 'grant'}" class="btn-toggle-member px-3 py-1 rounded-sm text-[11px] font-semibold border ${isMem ? 'border-red-900/40 text-red-400 hover:bg-red-950/40' : 'border-green-800/40 text-green-400 hover:bg-green-950/40'} transition-colors">
                 ${isMem ? 'Révoquer' : 'Valider adhésion'}
               </button>
             </td>
@@ -1410,7 +1410,7 @@
           </td>
           <td class="p-3 text-right">
             ${admins.length > 1 ? `
-              <button data-uid="${a.id}" class="btn-revoke-admin px-3 py-1 rounded text-[11px] font-semibold border border-red-900/40 text-red-400 hover:bg-red-950/40 transition-colors">
+              <button data-uid="${a.id}" class="btn-revoke-admin px-3 py-1 rounded-sm text-[11px] font-semibold border border-red-900/40 text-red-400 hover:bg-red-950/40 transition-colors">
                 Révoquer
               </button>
             ` : `<span class="text-[11px] text-meva-textMuted italic">Dernier admin (protégé)</span>`}
@@ -1579,16 +1579,16 @@
       tr.innerHTML = `
         <td class="p-3 text-white font-bold flex items-center gap-2">
           <span>${name}</span>
-          ${isExternal ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-gray-800 text-gray-300 border border-gray-700">Externe</span>' : ''}
+          ${isExternal ? '<span class="px-1.5 py-0.5 rounded-sm text-[9px] font-semibold bg-gray-800 text-gray-300 border border-gray-700">Externe</span>' : ''}
         </td>
         <td class="p-3 text-center">
-          <input type="number" min="0" max="10" value="${games}" class="input-games w-16 bg-meva-bg border border-meva-border rounded px-2 py-1 text-center text-white focus:border-meva-accent outline-none">
+          <input type="number" min="0" max="10" value="${games}" class="input-games w-16 bg-meva-bg border border-meva-border rounded-sm px-2 py-1 text-center text-white focus:border-meva-accent outline-hidden">
         </td>
         <td class="p-3 text-center">
-          <input type="number" min="0" max="5" value="${wins}" class="input-wins w-16 bg-meva-bg border border-meva-border rounded px-2 py-1 text-center text-white focus:border-meva-accent outline-none">
+          <input type="number" min="0" max="5" value="${wins}" class="input-wins w-16 bg-meva-bg border border-meva-border rounded-sm px-2 py-1 text-center text-white focus:border-meva-accent outline-hidden">
         </td>
         <td class="p-3 text-right">
-          <span class="score-total text-meva-accent font-bold text-sm bg-purple-900/20 px-3 py-1 rounded">${total}</span> pts
+          <span class="score-total text-meva-accent font-bold text-sm bg-purple-900/20 px-3 py-1 rounded-sm">${total}</span> pts
         </td>
         <td class="p-3 text-center w-10">
           <button type="button" class="btn-remove-row text-gray-500 hover:text-red-400 p-1 transition-colors" title="Retirer ce joueur">

@@ -1,3 +1,32 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss' source('../../public');
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-meva-bg: #0f1117;
+  --color-meva-surface: #161922;
+  --color-meva-border: #232734;
+  --color-meva-accent: #b8a9f5;
+  --color-meva-accentHover: #a78bfa;
+  --color-meva-blue: #93c5fd;
+  --color-meva-textMain: #f8fafc;
+  --color-meva-textMuted: #94a3b8;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}

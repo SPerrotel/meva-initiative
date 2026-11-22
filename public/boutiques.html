@@ -6,13 +6,12 @@
   <title>Boutiques partenaires — MEVA Initiative</title>
   <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
   <meta name="description" content="Découvrez les boutiques partenaires de Haute-Savoie qui accueillent la communauté MEVA Initiative.">
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
 
   <!-- Contenu Principal -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <main class="grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     <div class="space-y-2">
       <h1 class="text-2xl md:text-3xl font-extrabold text-white">Nos boutiques partenaires</h1>
       <p class="text-xs md:text-sm text-meva-textMuted">Les lieux qui font vivre et vibrer la communauté MEVA en Haute-Savoie.</p>
@@ -92,12 +91,12 @@
                   ${(() => {
                     const status = st.status || "league_partner";
                     if (status === "official_partner") {
-                      return `<span class="text-[10px] px-2.5 py-0.5 rounded font-semibold border bg-blue-950/40 text-blue-400 border-blue-800/40">Partenaire officiel</span>`;
+                      return `<span class="text-[10px] px-2.5 py-0.5 rounded-sm font-semibold border bg-blue-950/40 text-blue-400 border-blue-800/40">Partenaire officiel</span>`;
                     }
                     if (status === "friend") {
-                      return `<span class="text-[10px] px-2.5 py-0.5 rounded font-semibold border bg-[#232734] text-meva-textMuted border-meva-border">Boutique amie</span>`;
+                      return `<span class="text-[10px] px-2.5 py-0.5 rounded-sm font-semibold border bg-meva-border text-meva-textMuted border-meva-border">Boutique amie</span>`;
                     }
-                    return `<span class="text-[10px] px-2.5 py-0.5 rounded font-semibold border ${style.badge}">Ligue et partenaire officiel</span>`;
+                    return `<span class="text-[10px] px-2.5 py-0.5 rounded-sm font-semibold border ${style.badge}">Ligue et partenaire officiel</span>`;
                   })()}
                 </div>
               </div>

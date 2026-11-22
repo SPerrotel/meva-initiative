@@ -19,10 +19,10 @@ MEVA Initiative est une application web conçue pour rassembler la communauté a
 ```text
 meva-initiative/
 ├── public/             # Fichiers sources front-end (HTML, JS, assets)
-├── src/css/            # Fichiers sources Tailwind CSS
+├── src/css/            # Source Tailwind CSS (config du thème incluse, via @theme)
+├── src/js/firebase/    # Points d'entrée du bundle SDK Firebase
 ├── scripts/            # Scripts utilitaires (ex: bootstrap admin)
-├── firebase.json       # Configuration Firebase
-└── tailwind.config.js  # Configuration Tailwind
+└── firebase.json       # Configuration Firebase
 
 ## ⚙️ Installation
 
@@ -72,7 +72,7 @@ Le projet est prêt : voir la section **Développement** ci-dessous pour le lanc
 ### Lancer le projet
 
 ```bash
-npm run dev:css     # compile Tailwind CSS en mode watch
+npm run dev:css     # compile Tailwind CSS (v4) en mode watch
 npm run build       # config (prod) + bundle du SDK Firebase + CSS
 npm run serve       # build puis démarre Firebase Hosting en local
 npm run dev         # génère la config (dev), bundle le SDK Firebase et lance les émulateurs Firebase (auth, firestore, database, hosting)
@@ -111,3 +111,11 @@ Le SDK Firebase n'est plus chargé depuis `gstatic.com` : il est installé via n
 - Le code commun (dont `firebase-app`) est dans un chunk partagé : une seule instance de l'app Firebase pour toutes les pages.
 - Pour mettre à jour : `npm install --save-exact firebase@<version>` (garder `@firebase/rules-unit-testing` compatible avec la version majeure de `firebase`), puis `npm run build:js`.
 - Cache (`firebase.json`) : les points d'entrée sont en `no-cache`, les chunks (nom hashé) en `immutable`, pour éviter un mélange de versions après un déploiement.
+
+### Tailwind CSS (v4)
+
+Tailwind v4 génère le CSS à la demande (moteur JIT par défaut) via `@tailwindcss/cli` : `npm run dev:css` (watch) ou `npm run build:css` (minifié). Il n'y a plus de `tailwind.config.js` : le thème (couleurs `meva-*`, variante `dark`) est défini en CSS dans `src/css/input.css`.
+
+- Les classes sont détectées automatiquement dans `public/` (HTML et JS, hors fichiers ignorés par git). Les noms de classes construits dynamiquement en JS doivent apparaître en entier dans le code.
+- Le script CDN `cdn.tailwindcss.com` a été retiré : `public/css/style.css` (généré, ignoré par git) est la seule source de style.
+- `hall-of-fame.html` et `association.html` surchargent la palette `meva-*` avec leurs propres variables CSS (`:root`), comme le faisait leur ancienne config inline.

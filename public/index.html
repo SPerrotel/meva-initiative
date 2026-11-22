@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEVA Initiative — La communauté Star Wars: Unlimited</title>
   <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
 
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+  <main class="grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
     
     <!-- Calendrier Central & Tournois à venir -->
     <section class="space-y-10">
@@ -332,7 +331,7 @@
           const color = store.color || getStoreHexColor(store.name);
           return `
             <button data-store="${store.name}" class="store-filter-btn flex items-center justify-start gap-3 px-4 py-3 bg-meva-bg hover:bg-meva-border border border-meva-border rounded-xl transition-colors w-full text-left">
-              <span class="w-3.5 h-3.5 rounded-full flex-shrink-0" style="background-color: ${color};"></span>
+              <span class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: ${color};"></span>
               <span class="text-xs md:text-sm font-bold text-white truncate">${store.name}</span>
             </button>
           `;
@@ -340,7 +339,7 @@
 
         buttonsHtml += `
           <button data-store="MEVA" class="store-filter-btn flex items-center justify-start gap-3 px-4 py-3 bg-meva-bg hover:bg-meva-border border border-meva-border rounded-xl transition-colors w-full text-left">
-            <span class="w-3.5 h-3.5 rounded-full bg-[#8B5CF6] flex-shrink-0"></span>
+            <span class="w-3.5 h-3.5 rounded-full bg-[#8B5CF6] shrink-0"></span>
             <span class="text-xs md:text-sm font-bold text-white truncate">MEVA</span>
           </button>
         `;
@@ -408,7 +407,7 @@
             <div class="relative bg-meva-surface border border-meva-border transition-all rounded-xl chamfered-card overflow-hidden flex flex-col justify-between" style="--hover-border-color: ${hex};" onmouseover="this.style.borderColor='${hex}'" onmouseout="this.style.borderColor='transparent'">
               <div class="h-36 bg-cover bg-center border-b border-meva-border" style="background-image: linear-gradient(to bottom, rgba(15,17,23,0.1), rgba(15,17,23,0.95)), url('${bgImg}');">
                  <div class="p-4 flex justify-between items-start">
-                   <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-black/60 text-white backdrop-blur-md">${evt.format}</span>
+                   <span class="px-2 py-0.5 rounded-sm text-[10px] font-semibold bg-black/60 text-white backdrop-blur-md">${evt.format}</span>
                  </div>
               </div>
               <div class="p-6 space-y-4">
