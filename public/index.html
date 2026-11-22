@@ -17,10 +17,12 @@
     <!-- En-tête de page -->
       <div class="text-center space-y-4 max-w-2xl mx-auto flex flex-col items-center">
         <img src="./assets/images/meva_initiative_logo_logo.png" alt="MEVA Initiative" class="h-44 md:h-60 w-auto object-contain drop-shadow-2xl">
-        <h1 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+        <!-- Textes modifiables depuis l'admin (config_home/home) : le contenu ci-dessous s'affiche tant que Firestore n'a pas répondu. -->
+        <span id="home-tagline" class="text-[10px] uppercase font-bold tracking-widest text-meva-accent bg-purple-900/40 border border-meva-accent/30 px-2.5 py-1 rounded-sm">MEVA Initiative</span>
+        <h1 id="home-title" class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
           La communauté <span class="text-meva-accent">Star Wars: Unlimited</span>
         </h1>
-        <p class="text-meva-textMuted text-sm md:text-base">
+        <p id="home-subtitle" class="text-meva-textMuted text-sm md:text-base">
           Consultez le calendrier des ligues. Sélectionnez une date ou une boutique pour filtrer les événements à venir.
         </p>
       </div>
@@ -111,7 +113,7 @@
   </footer>
 
   <script type="module">
-    import { getEvents, getNews, getStores, refreshOnReconnect } from "./store.js";
+    import { getEvents, getHomeConfig, getNews, getStores, refreshOnReconnect } from "./store.js";
     import { db, auth } from "./firebase-config.js";
     import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
     import { doc, getDoc } from "/vendor/firebase/firebase-firestore.js";
@@ -303,12 +305,26 @@
       });
     }
 
+    // En-tête de la page. Le titre est du HTML (mise en couleur d'une partie du texte) : seuls les admins
+    // peuvent écrire config_home, comme pour les actualités affichées plus bas. Un champ vide garde le texte initial.
+    function renderHomeHeader(cfg) {
+      const taglineEl = document.getElementById("home-tagline");
+      const titleEl = document.getElementById("home-title");
+      const subtitleEl = document.getElementById("home-subtitle");
+      if (cfg.tagline) taglineEl.textContent = cfg.tagline;
+      if (cfg.title) titleEl.innerHTML = cfg.title;
+      if (cfg.subtitle) subtitleEl.textContent = cfg.subtitle;
+    }
+
     async function initHomePage() {
-      const [allEvents, allStores, allNews] = await Promise.all([
+      const [homeConfig, allEvents, allStores, allNews] = await Promise.all([
+        getHomeConfig(),
         getEvents(),
         getStores(),
         getNews()
       ]);
+
+      renderHomeHeader(homeConfig || {});
       
       cachedStores = allStores || [];
       homeEvents = allEvents || [];

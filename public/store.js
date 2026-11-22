@@ -189,11 +189,11 @@ export function getStoreStyle(locationName = "") {
    3. CONFIGURATION GLOBALE DU SITE
    ============================================================================ */
 
+// Mêmes textes que le contenu initial de l'en-tête de index.html, affiché tant que Firestore n'a pas répondu.
 export const DEFAULT_HOME_CONFIG = {
   tagline: "MEVA Initiative",
-  title: "La communauté <span class='text-meva-accent'>Star Wars: Unlimited</span>",
-  subtitle: "Tournois • Ligues • Boutiques partenaires • Actualités locales en Haute-Savoie.",
-  heroImageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80"
+  title: "La communauté <span class=\"text-meva-accent\">Star Wars: Unlimited</span>",
+  subtitle: "Consultez le calendrier des ligues. Sélectionnez une date ou une boutique pour filtrer les événements à venir."
 };
 
 export const DEFAULT_ASSO_CONFIG = {
