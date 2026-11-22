@@ -111,7 +111,7 @@ Les skills sont installés dans `.agents/skills/` (avec des liens symboliques po
 
 ### Intégration continue
 
-[`.github/workflows/tests.yml`](.github/workflows/tests.yml) (GitHub Actions, sur les PR vers `main` et les pushs sur `main`) lance deux jobs en parallèle : `test:rules` (règles Firestore) et `test:e2e` (Playwright sur 5 profils de navigateur, rapport HTML en artefact). Les émulateurs Firebase nécessitent Java 21+ (Temurin 21 en CI) ; `firebase-tools` vient de `npm ci` (devDependency).
+[`.github/workflows/tests.yml`](.github/workflows/tests.yml) (GitHub Actions, sur toutes les PR, quelle que soit leur branche de base, et sur les pushs vers `main`) lance deux jobs en parallèle : `test:rules` (règles Firestore) et `test:e2e` (Playwright sur 5 profils de navigateur, rapport HTML en artefact). Les émulateurs Firebase nécessitent Java 21+ (Temurin 21 en CI) ; `firebase-tools` vient de `npm ci` (devDependency).
 
 ### Configuration Firebase (fichiers `.env`)
 
