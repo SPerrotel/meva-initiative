@@ -29,7 +29,9 @@ meva-initiative/
 ### Prérequis
 
 - [**fnm**](https://github.com/schniz/fnm) (Fast Node Manager) pour gérer la version de Node.js.
-- [Firebase CLI](https://firebase.google.com/docs/cli) (`npm install -g firebase-tools`) pour le serveur local et les émulateurs.
+- **Java 21+** (JRE) pour les émulateurs Firebase (exigence de `firebase-tools`).
+
+La [Firebase CLI](https://firebase.google.com/docs/cli) est installée automatiquement comme devDependency (version fixée) : pas d'installation globale. Les scripts npm l'utilisent directement ; pour une commande manuelle, utiliser `npx firebase <commande>` (ex. `npx firebase login`, `npx firebase deploy`).
 
 ### 1. Installer fnm
 
@@ -129,7 +131,7 @@ Ces valeurs sont publiques (config web Firebase) : elles servent à changer d'en
 - **Clés restantes** : `FIREBASE_API_KEY` et `FIREBASE_APP_ID` (obligatoires), `FIREBASE_MEASUREMENT_ID` (optionnelle, ignorée si vide), `FIREBASE_DATABASE_REGION`.
 - `FIREBASE_USE_EMULATORS=true` (`.env.dev`) active la connexion du site aux émulateurs ; `FIREBASE_EMULATOR_HOST` définit l'hôte (défaut `localhost`).
 
-`npm run preview` et `firebase deploy` (hook `predeploy`) régénèrent toujours la config de **prod** (via `npm run build`).
+`npm run preview` et `npx firebase deploy` (hook `predeploy`) régénèrent toujours la config de **prod** (via `npm run build`).
 
 ### SDK Firebase (bundle esbuild)
 
