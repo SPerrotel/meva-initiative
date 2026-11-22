@@ -2,6 +2,7 @@
 // from the empty memory cache instead of failing. Pages must fall back to the local copy instead of hanging.
 import { randomUUID } from 'node:crypto'
 import { readFileSync } from 'node:fs'
+import { logout, newUser, register } from './auth.mjs'
 import { expect, test } from './fixtures.mjs'
 
 const { emulators } = JSON.parse(readFileSync('firebase.json', 'utf8'))
@@ -16,14 +17,17 @@ const blockFirestore = (page, allowedConsoleErrors) => {
 }
 
 // Writes a document straight into the emulator, bypassing the security rules (`Bearer owner`).
+// Returns the document id.
 async function seedDoc(collection, fields) {
-  const url = `http://localhost:${emulators.firestore.port}/v1/projects/${projects.dev}/databases/(default)/documents/${collection}?documentId=e2e-${randomUUID()}`
+  const id = `e2e-${randomUUID()}`
+  const url = `http://localhost:${emulators.firestore.port}/v1/projects/${projects.dev}/databases/(default)/documents/${collection}?documentId=${id}`
   const response = await fetch(url, {
     method: 'POST',
     headers: { Authorization: 'Bearer owner', 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields }),
   })
   expect(response.ok, await response.text()).toBe(true)
+  return id
 }
 
 // Its `createdAt` keeps it behind the other news, so it never becomes the home page headline other tests may rely on.
@@ -82,6 +86,32 @@ test('calendar falls back to the last events read when Firestore becomes unreach
 
   await blockFirestore(page, allowedConsoleErrors)
   await page.reload()
+
+  await expect(page.locator('#events-list')).toContainText(title)
+})
+
+test('calendar still falls back to the last events read after unregistering from the profile', async ({ page, allowedConsoleErrors }) => {
+  const title = `Tournoi e2e ${randomUUID()}`
+  const eventId = await seedEvent(title)
+  await register(page, newUser())
+  await expect(page).toHaveURL(/\/profil/)
+  // The profile shows once the session is restored. Same module instance as the page's: the signed-in user.
+  await expect(page.locator('#input-pseudo')).not.toHaveValue('')
+  const uid = await page.evaluate(async () => (await import('/firebase-config.js')).auth.currentUser.uid)
+  await seedDoc('registrations', { eventId: { stringValue: eventId }, userId: { stringValue: uid } })
+
+  await page.goto('/calendrier')
+  await expect(page.locator('#events-list')).toContainText(title)
+
+  await page.goto('/profil')
+  page.once('dialog', (dialog) => dialog.accept())
+  await page.locator(`.btn-cancel-reg[data-eventid="${eventId}"]`).click()
+  await expect(page.locator(`.btn-cancel-reg[data-eventid="${eventId}"]`)).toHaveCount(0)
+  // Signed in, the navbar's user profile read fails without Firestore: not what this test is about.
+  await logout(page)
+
+  await blockFirestore(page, allowedConsoleErrors)
+  await page.goto('/calendrier')
 
   await expect(page.locator('#events-list')).toContainText(title)
 })
