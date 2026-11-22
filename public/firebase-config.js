@@ -7,7 +7,8 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  connectAuthEmulator
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
   getFirestore, 
@@ -21,20 +22,12 @@ import {
   deleteDoc, 
   query, 
   orderBy, 
-  onSnapshot 
+  onSnapshot,
+  connectFirestoreEmulator
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, connectDatabaseEmulator } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBlVozmeXiA6OIHkh9vrtHnJcrQKuejCEE",
-  authDomain: "meva-initiative.firebaseapp.com",
-  projectId: "meva-initiative",
-  storageBucket: "meva-initiative.firebasestorage.app",
-  messagingSenderId: "805590717321",
-  appId: "1:805590717321:web:19a8936722ae4851fa0758",
-  measurementId: "G-SFJLLFXNB7",
-  databaseURL: "https://meva-initiative-default-rtdb.europe-west1.firebasedatabase.app"
-};
+import { firebaseConfig, emulators } from "./firebase-config.generated.js";
 
 // Initialisation
 const app = initializeApp(firebaseConfig);
@@ -42,6 +35,13 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
+
+// Dev : bascule sur les émulateurs Firebase (voir .env.dev)
+if (emulators) {
+  connectAuthEmulator(auth, `http://${emulators.host}:${emulators.authPort}`, { disableWarnings: true });
+  connectFirestoreEmulator(db, emulators.host, emulators.firestorePort);
+  connectDatabaseEmulator(rtdb, emulators.host, emulators.databasePort);
+}
 
 // Exports pratiques pour les requêtes
 export { 

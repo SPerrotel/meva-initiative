@@ -8,7 +8,10 @@
   "scripts": {
     "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
     "build:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
-    "serve": "firebase serve --only hosting",
+    "config": "node scripts/generate-firebase-config.mjs prod",
+    "config:dev": "node scripts/generate-firebase-config.mjs dev",
+    "serve": "npm run config && firebase serve --only hosting",
+    "dev": "node scripts/dev.mjs",
     "test:rules": "firebase emulators:exec --only firestore \"npx jest tests/security/security.test.js --runInBand\""
   },
   "dependencies": {

@@ -69,6 +69,31 @@ npm install
 
 ```bash
 npm run dev:css     # compile Tailwind CSS en mode watch
-npm run serve       # démarre Firebase Hosting en local
+npm run serve       # génère la config (prod) et démarre Firebase Hosting en local
+npm run dev         # génère la config (dev) et lance les émulateurs Firebase (auth, firestore, database, hosting)
+                    # -> site disponible sur http://localhost:8000 (port défini dans firebase.json > emulators.hosting)
+
 npm run test:rules  # exécute les tests des règles de sécurité Firestore
 ```
+
+### Configuration Firebase (fichiers `.env`)
+
+La config Firebase web est générée dans `public/firebase-config.generated.js` (ignoré par git) par `npm run config` (prod) ou `npm run config:dev` (émulateurs).
+
+| Fichier | Versionné | Rôle |
+|---|---|---|
+| `.env.example` | oui | Liste et documente toutes les clés |
+| `.env` | oui | Valeurs par défaut partagées (projet de production) |
+| `.env.dev` | oui | Surcharges du mode dev (projet `demo-meva-initiative` + émulateurs) |
+| `.env.local` | non | Surcharges personnelles |
+
+Priorité (de la plus forte à la plus faible) : variables shell > `.env.local` > `.env.dev` (mode dev uniquement) > `.env`.
+
+Ces valeurs sont publiques (config web Firebase) : elles servent à changer d'environnement, pas à protéger un secret.
+
+**Sources de vérité**
+- **Ports des émulateurs** : uniquement dans le bloc `emulators` de `firebase.json`. Le générateur les lit de là, donc la CLI et le navigateur ne peuvent pas diverger.
+- **Project id en dev** : uniquement dans `.env.dev` (`FIREBASE_PROJECT_ID`). `npm run dev` le lit de là pour lancer les émulateurs (`--project`) et refuse de démarrer s'il ne commence pas par `demo-`.
+- `FIREBASE_USE_EMULATORS=true` (`.env.dev`) active la connexion du site aux émulateurs ; `FIREBASE_EMULATOR_HOST` définit l'hôte (défaut `localhost`).
+
+`npm run serve` et `firebase deploy` (hook `predeploy`) régénèrent toujours la config de **prod**.

@@ -1,6 +1,7 @@
 {
   "hosting": {
     "public": "public",
+    "predeploy": ["npm run config"],
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -31,6 +32,13 @@
   },
   "firestore": {
     "rules": "firestore.rules"
+  },
+  "emulators": {
+    "auth": { "port": 9099 },
+    "firestore": { "port": 8080 },
+    "database": { "port": 9000 },
+    "hosting": { "port": 8000 },
+    "ui": { "enabled": true }
   },
   "functions": [
     {

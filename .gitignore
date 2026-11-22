@@ -1,13 +1,16 @@
 node_modules/
-.env
 .env.local
 *.json
 !package.json
 !package-lock.json
+ui-debug.log*
+npm-debug.log*
+public/css/style.css
+
+# Firebase
 !firebase.json
 .firebase/
 firebase-debug.log*
 firestore-debug.log*
-ui-debug.log*
-npm-debug.log*
-public/css/style.css
+database-debug.log*
+public/firebase-config.generated.js
