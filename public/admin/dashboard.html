@@ -602,11 +602,17 @@
 
     document.getElementById("form-home-config").onsubmit = async (e) => {
       e.preventDefault();
-      await saveHomeConfig({
-        tagline: document.getElementById("home-tagline").value.trim(),
-        title: document.getElementById("home-title").value.trim(),
-        subtitle: document.getElementById("home-subtitle").value.trim()
-      });
+      try {
+        await saveHomeConfig({
+          tagline: document.getElementById("home-tagline").value.trim(),
+          title: document.getElementById("home-title").value.trim(),
+          subtitle: document.getElementById("home-subtitle").value.trim()
+        });
+      } catch (err) {
+        console.error("Erreur saveHomeConfig Firestore:", err);
+        alert("Erreur lors de l'enregistrement de la page d'accueil : " + (err.message || err));
+        return;
+      }
       await loadHomeForm();
       alert("Page d'accueil mise à jour !");
     };
@@ -634,18 +640,24 @@
       const missionsText = document.getElementById("asso-missions").value;
       const missions = missionsText.split("\n").map(m => m.trim()).filter(m => m.length > 0);
 
-      await saveAssoConfig({
-        title: document.getElementById("asso-title").value.trim(),
-        subtitle: document.getElementById("asso-subtitle").value.trim(),
-        description: document.getElementById("asso-desc").value.trim(),
-        helloAssoUrl: document.getElementById("asso-helloasso").value.trim(),
-        membershipBadge: document.getElementById("asso-mem-badge")?.value.trim() || "Adhésion annuelle",
-        membershipTitle: document.getElementById("asso-mem-title")?.value.trim() || "Rejoindre MEVA Initiative sur HelloAsso",
-        membershipDesc: document.getElementById("asso-mem-desc")?.value.trim() || "",
-        membershipBtnText: document.getElementById("asso-mem-btn")?.value.trim() || "Adhérer via HelloAsso",
-        missions,
-        imageUrl
-      });
+      try {
+        await saveAssoConfig({
+          title: document.getElementById("asso-title").value.trim(),
+          subtitle: document.getElementById("asso-subtitle").value.trim(),
+          description: document.getElementById("asso-desc").value.trim(),
+          helloAssoUrl: document.getElementById("asso-helloasso").value.trim(),
+          membershipBadge: document.getElementById("asso-mem-badge")?.value.trim() || "Adhésion annuelle",
+          membershipTitle: document.getElementById("asso-mem-title")?.value.trim() || "Rejoindre MEVA Initiative sur HelloAsso",
+          membershipDesc: document.getElementById("asso-mem-desc")?.value.trim() || "",
+          membershipBtnText: document.getElementById("asso-mem-btn")?.value.trim() || "Adhérer via HelloAsso",
+          missions,
+          imageUrl
+        });
+      } catch (err) {
+        console.error("Erreur saveAssoConfig Firestore:", err);
+        alert("Erreur lors de l'enregistrement de la page Association : " + (err.message || err));
+        return;
+      }
       await loadAssoForm();
       alert("Page Association mise à jour !");
     };
