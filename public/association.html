@@ -120,7 +120,7 @@
   </footer>
 
   <script type="module">
-    import { getAssoConfig } from "./store.js";
+    import { getAssoConfig, refreshOnReconnect } from "./store.js";
 
     // Menu burger mobile
     const btnMenu = document.getElementById("btn-mobile-menu");
@@ -171,6 +171,7 @@
       }
     }
 
+    refreshOnReconnect(initAssoPage);
     initAssoPage();
   </script>
   <script type="module" src="./navbar.js"></script>

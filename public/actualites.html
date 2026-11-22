@@ -47,7 +47,7 @@
   </footer>
 
   <script type="module">
-    import { getNews } from "./store.js";
+    import { getNews, refreshOnReconnect } from "./store.js";
 
     // Menu burger mobile
     const btnMenu = document.getElementById("btn-mobile-menu");
@@ -121,6 +121,7 @@
       }
     }
 
+    refreshOnReconnect(initNewsPage);
     initNewsPage();
   </script>
   <script type="module" src="./navbar.js"></script>
