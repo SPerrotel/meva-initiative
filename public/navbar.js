@@ -217,8 +217,16 @@ async function initAuthAndPresence() {
 
         let userPseudo = user.displayName || "Joueur";
 
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) {
+        // Firestore injoignable (onglet rouvert, réseau qui se réveille) : la lecture échoue. Les badges gardent
+        // alors les rôles enregistrés au dernier chargement, et le statut de présence est branché quand même.
+        let snap = null;
+        try {
+          snap = await getDoc(doc(db, "users", user.uid));
+        } catch (err) {
+          console.warn("Profil injoignable, rôles du dernier chargement conservés :", err);
+        }
+
+        if (snap?.exists()) {
           const data = snap.data();
           const isMember = data.roles?.member === true;
           const isAdmin = data.roles?.admin === true;
