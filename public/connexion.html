@@ -210,7 +210,9 @@
         submitBtn.textContent = isRegisterMode ? "Créer mon compte" : "Se connecter";
         
         if (err.code === 'auth/email-already-in-use') showError("Cette adresse e-mail est déjà utilisée.");
-        else if (err.code === 'auth/invalid-credential') showError("E-mail ou mot de passe incorrect.");
+        // Production answers `auth/invalid-credential` (e-mail enumeration protection); the Auth emulator and
+        // projects without it answer `auth/wrong-password` / `auth/user-not-found`: same message for all three.
+        else if (['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found'].includes(err.code)) showError("E-mail ou mot de passe incorrect.");
         else if (err.code === 'auth/weak-password') showError("Le mot de passe doit faire au moins 6 caractères.");
         else showError(err.message || "Une erreur est survenue.");
       }

@@ -74,9 +74,7 @@ test('a wrong password is rejected with an error message', async ({ page, allowe
 
   await login(page, user.email, 'not-the-password')
 
-  // The app maps `auth/invalid-credential` (production); the emulator still answers `auth/wrong-password`,
-  // which the app shows raw. Both mean "rejected": assert the error is displayed and we stay on the login page.
-  await expect(page.locator('#auth-error')).toHaveText(/E-mail ou mot de passe incorrect|wrong-password/)
+  await expect(page.locator('#auth-error')).toHaveText('E-mail ou mot de passe incorrect.')
   await expect(page).toHaveURL(/\/connexion/)
 })
 
