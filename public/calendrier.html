@@ -424,8 +424,6 @@
 
     async function initCalendar() {
       try {
-        localStorage.removeItem("meva_events");
-        
         const [eventsData, storesData, regsSnap] = await Promise.all([
           getEvents(),
           getStores(),
