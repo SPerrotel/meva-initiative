@@ -1,25 +1,5 @@
 // Smoke tests: the site is served by the hosting emulator and boots against the Auth/Firestore emulators.
-import { expect, test } from '@playwright/test'
-
-// Firestore long-poll channels are closed by the SDK when a page closes: the emulator may answer 400
-// (`TYPE=terminate`) and WebKit reports "network connection was lost" on an in-flight Listen request.
-const isFirestoreChannelNoise = (message) => {
-  const { url } = message.location()
-  return url.includes('/google.firestore.v1.Firestore/') && url.includes('/channel?')
-}
-
-// Collect uncaught exceptions and console errors so a broken Firebase init or a failed bundle fails the test.
-test.beforeEach(({ page }) => {
-  page.errors = []
-  page.on('pageerror', (error) => page.errors.push(`pageerror: ${error.message}`))
-  page.on('console', (message) => {
-    if (message.type() === 'error' && !isFirestoreChannelNoise(message)) page.errors.push(`console: ${message.text()} (${message.location().url})`)
-  })
-})
-
-test.afterEach(({ page }) => {
-  expect(page.errors, 'no uncaught errors or console errors').toEqual([])
-})
+import { expect, test } from './fixtures.mjs'
 
 test('home page renders with navbar and content sections', async ({ page }) => {
   await page.goto('/')
