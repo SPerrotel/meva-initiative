@@ -13,6 +13,12 @@ Conventions for AI coding agents working in this repository (the project itself 
   - `ci`: CI pipeline changes (GitHub Actions workflows, CI config), never `chore`.
   - `docs`: documentation only (README, AGENTS.md, other docs), never `chore`.
 
+## Branches
+
+- Name branches `<type>/<short-kebab-description>`, with `<type>` taken from the commit types above, by what the branch mainly does (e.g. `fix/resumed-page-stays-empty`, `feat/...`, `chore/...`, `test/...`, `ci/...`, `docs/...`).
+- Branch off the branch the work depends on (see "Base branch" under Pull requests), not `main` by default.
+- When the work has an issue, create the branch from it so GitHub links the two: `gh issue develop <number> --name <branch> --base <base> --checkout` (the base must be pushed).
+
 ## Dependencies
 
 - `allowScripts` in `package.json` lists, by exact version (e.g. `"esbuild@0.28.2": true`), the dependencies allowed to run install scripts. Whenever you add, update or remove a dependency, keep it in sync: rename the entry to the new version (an outdated key silently stops allowing the script), add an entry for a new dependency that needs install scripts, and drop entries for removed ones. Commit it with the dependency change (`chore(deps)`).
@@ -20,6 +26,7 @@ Conventions for AI coding agents working in this repository (the project itself 
 ## Issues
 
 - **Bugs found**: whenever you find a bug (while bug hunting, reviewing, or in passing), ask the user whether to open an issue for it on the repository. Do not open one without their yes. If they agree, write the issue title and body in French, like PRs.
+- **Work tracked by an issue**: when starting work on a bug or task that deserves one, open the issue (with the user's yes, as above) before creating the branch, then create the branch linked to it (see Branches). Reference it in the PR description with `Closes #<number>`.
 
 ## Pull requests
 
