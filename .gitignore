@@ -20,3 +20,7 @@ public/vendor/
 # Agent skills (restored from skills-lock.json on npm install)
 .agents/
 .claude/skills/
+
+# Playwright
+test-results/
+playwright-report/

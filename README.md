@@ -79,6 +79,9 @@ npm run preview     # build de production, puis Firebase Hosting en local (sans 
 
 npm run test:rules  # tests des règles de sécurité Firestore (tests/security/) ; démarre son propre émulateur Firestore
                     # (port de firebase.json) : arrêter `npm run dev` avant, sinon le port est occupé
+npm run test:e2e    # tests E2E Playwright (tests/e2e/) ; démarre hosting + auth + firestore + database en émulateur
+                    # (arrêter `npm run dev` avant) ; navigateurs : chromium, firefox, webkit + mobiles Pixel 7 (chromium)
+                    # et iPhone 15 (webkit) ; première fois : `npx playwright install chromium firefox webkit`
 ```
 
 ### Scripts npm
@@ -97,6 +100,8 @@ Convention : `verbe:cible`, le préfixe `dev:` désignant ce qui n'existe qu'en 
 | `dev:css` | Tailwind en mode watch (`--watch=always`, pour ne pas s'arrêter quand l'entrée standard est fermée) |
 | `dev:emulators` | émulateurs Firebase, projet `dev` (alias de `.firebaserc`) |
 | `preview` | `build` puis `firebase serve --only hosting` |
+| `test:e2e` | `dev:config`, `build:sdk`, `build:css`, puis `test:e2e:run` |
+| `test:e2e:run` | `playwright test` encapsulé dans `firebase emulators:exec` (hosting, auth, firestore, database ; le site utilise aussi la Realtime Database) |
 | `skills:install` | restaure les skills d'agents IA (Playwright, Firebase) depuis `skills-lock.json` via le CLI [`skills`](https://www.npmjs.com/package/skills) épinglé ; lancé par `postinstall`, ignoré en CI (`CI`) ou avec `SKIP_SKILLS=1` |
 | `skills:update` | (re)télécharge les skills listés dans `scripts/install-skills.mjs` et met à jour `skills-lock.json` (à committer) |
 

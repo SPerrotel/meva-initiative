@@ -6,6 +6,9 @@
     "node": ">=26.13.1"
   },
   "scripts": {
+    "postinstall": "npm run skills:install",
+    "skills:install": "node scripts/install-skills.mjs",
+    "skills:update": "node scripts/install-skills.mjs update",
     "build": "run-s build:*",
     "build:config": "node --env-file=.env --env-file-if-exists=.env.local scripts/generate-firebase-config.mjs",
     "build:sdk": "node scripts/build-firebase.mjs",
@@ -17,15 +20,15 @@
     "dev:emulators": "firebase emulators:start --project dev",
     "preview": "npm run build && firebase serve --only hosting",
     "test:rules": "firebase emulators:exec --only firestore --project dev \"jest tests/security/security.test.js --runInBand\"",
-    "skills:install": "node scripts/install-skills.mjs",
-    "postinstall": "npm run skills:install",
-    "skills:update": "node scripts/install-skills.mjs update"
+    "test:e2e": "run-s dev:config build:sdk build:css test:e2e:run",
+    "test:e2e:run": "firebase emulators:exec --only hosting,auth,firestore,database --project dev \"playwright test\""
   },
   "dependencies": {
     "firebase": "13.4.0"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "6.0.0",
+    "@playwright/test": "1.65.1",
     "@tailwindcss/cli": "4.3.5",
     "esbuild": "0.28.2",
     "jest": "30.5.2",
