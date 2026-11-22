@@ -16,7 +16,10 @@
     "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch=always",
     "dev:emulators": "firebase emulators:start --project dev",
     "preview": "npm run build && firebase serve --only hosting",
-    "test:rules": "firebase emulators:exec --only firestore --project dev \"jest tests/security/security.test.js --runInBand\""
+    "test:rules": "firebase emulators:exec --only firestore --project dev \"jest tests/security/security.test.js --runInBand\"",
+    "skills:install": "node scripts/install-skills.mjs",
+    "postinstall": "npm run skills:install",
+    "skills:update": "node scripts/install-skills.mjs update"
   },
   "dependencies": {
     "firebase": "13.4.0"
@@ -27,6 +30,7 @@
     "esbuild": "0.28.2",
     "jest": "30.5.2",
     "npm-run-all2": "9.1.0",
+    "skills": "1.9.0",
     "tailwindcss": "4.3.5"
   }
 }

@@ -97,6 +97,10 @@ Convention : `verbe:cible`, le préfixe `dev:` désignant ce qui n'existe qu'en 
 | `dev:css` | Tailwind en mode watch (`--watch=always`, pour ne pas s'arrêter quand l'entrée standard est fermée) |
 | `dev:emulators` | émulateurs Firebase, projet `dev` (alias de `.firebaserc`) |
 | `preview` | `build` puis `firebase serve --only hosting` |
+| `skills:install` | restaure les skills d'agents IA (Playwright, Firebase) depuis `skills-lock.json` via le CLI [`skills`](https://www.npmjs.com/package/skills) épinglé ; lancé par `postinstall`, ignoré en CI (`CI`) ou avec `SKIP_SKILLS=1` |
+| `skills:update` | (re)télécharge les skills listés dans `scripts/install-skills.mjs` et met à jour `skills-lock.json` (à committer) |
+
+Les skills sont installés dans `.agents/skills/` (avec des liens symboliques pour Claude Code dans `.claude/skills/`), ces dossiers sont ignorés par git : seul `skills-lock.json` est versionné.
 
 ### Configuration Firebase (fichiers `.env`)
 
