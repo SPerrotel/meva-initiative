@@ -114,62 +114,6 @@
 
   <script type="module">
     import { getEvents, getHomeConfig, getNews, getStores, refreshOnReconnect } from "./store.js";
-    import { db, auth } from "./firebase-config.js";
-    import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
-    import { doc, getDoc } from "/vendor/firebase/firebase-firestore.js";
-
-    // Gestion Auth
-    const authBtn = document.getElementById("nav-auth-btn");
-    const adminBtn = document.getElementById("nav-admin-btn");
-    const mobileAuthBtn = document.getElementById("mobile-auth-btn");
-    const mobileAdminBtn = document.getElementById("mobile-admin-btn");
-    const memberBadge = document.getElementById("nav-member-badge");
-    const mobileMemberBadge = document.getElementById("mobile-member-badge");
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        if (authBtn) {
-          authBtn.querySelector('span').textContent = "Profil";
-          authBtn.href = "./profil.html";
-        }
-        if (mobileAuthBtn) {
-          mobileAuthBtn.querySelector('span').textContent = "Profil";
-          mobileAuthBtn.href = "./profil.html";
-        }
-        try {
-          const snap = await getDoc(doc(db, "users", user.uid));
-          if (snap.exists()) {
-            const data = snap.data();
-            if (data.roles?.member === true) {
-              if (memberBadge) memberBadge.classList.remove("hidden");
-              if (mobileMemberBadge) mobileMemberBadge.classList.remove("hidden");
-            } else {
-              if (memberBadge) memberBadge.classList.add("hidden");
-              if (mobileMemberBadge) mobileMemberBadge.classList.add("hidden");
-            }
-            if (data.roles?.admin === true) {
-              if (adminBtn) adminBtn.classList.remove("hidden");
-              if (mobileAdminBtn) mobileAdminBtn.classList.remove("hidden");
-            }
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      } else {
-        if (authBtn) {
-          authBtn.querySelector('span').textContent = "Connexion";
-          authBtn.href = "./connexion.html";
-        }
-        if (mobileAuthBtn) {
-          mobileAuthBtn.querySelector('span').textContent = "Connexion";
-          mobileAuthBtn.href = "./connexion.html";
-        }
-        if (memberBadge) memberBadge.classList.add("hidden");
-        if (mobileMemberBadge) mobileMemberBadge.classList.add("hidden");
-        if (adminBtn) adminBtn.classList.add("hidden");
-        if (mobileAdminBtn) mobileAdminBtn.classList.add("hidden");
-      }
-    });
 
     // --- LOGIQUE CALENDRIER ACCUEIL ---
     const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
