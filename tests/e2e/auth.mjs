@@ -42,3 +42,12 @@ export async function logout(page) {
   await page.locator('#btn-logout').click()
   await expect(page).not.toHaveURL(/\/profil/)
 }
+
+// Registers a new user and returns their uid, once the profile shows the restored session.
+export async function registerUser(page, user = newUser()) {
+  await register(page, user)
+  await expect(page).toHaveURL(/\/profil/)
+  await expect(page.locator('#input-pseudo')).not.toHaveValue('')
+  // Same module instance as the page's: the signed-in user.
+  return page.evaluate(async () => (await import('/firebase-config.js')).auth.currentUser.uid)
+}

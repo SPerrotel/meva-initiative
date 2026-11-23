@@ -192,22 +192,19 @@
               // 1. Supprime le ticket
               await deleteDoc(doc(db, "registrations", regId));
               
-              // 2. Retire le joueur du tableau de l'événement et met à jour le compteur
+              // 2. Retire le joueur de la copie locale de l'événement, pour le repli hors ligne du calendrier et de
+              // l'accueil. Pas d'écriture dans `events` : les règles la réservent aux admins, les pages comptent
+              // les inscrits d'après les tickets.
               if (evId) {
                 try {
                   const evSnap = await getDoc(doc(db, "events", evId));
                   if (evSnap.exists()) {
                     const evData = evSnap.data();
-                    let parts = Array.isArray(evData.participants) ? evData.participants : [];
-                    parts = parts.filter(id => id !== uid);
-                    
-                    const update = { participants: parts, count: Math.max(0, parts.length) };
-                    await updateDoc(doc(db, "events", evId), update);
-                    // Garde le nouveau total pour le repli hors ligne du calendrier et de l'accueil
-                    updateLocalEvent(evId, update);
+                    const parts = (Array.isArray(evData.participants) ? evData.participants : []).filter(id => id !== uid);
+                    updateLocalEvent(evId, { participants: parts, count: parts.length });
                   }
                 } catch (e) {
-                  console.warn("Mise à jour event échouée :", e);
+                  console.warn("Lecture event échouée :", e);
                 }
               }
 

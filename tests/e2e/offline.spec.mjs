@@ -1,12 +1,9 @@
 // Firestore unreachable (e.g. a tab resumed on mobile while the network wakes up): getDocs then answers at once
 // from the empty memory cache instead of failing. Pages must fall back to the local copy instead of hanging.
 import { randomUUID } from 'node:crypto'
-import { readFileSync } from 'node:fs'
 import { logout, newUser, register } from './auth.mjs'
+import { seedDoc } from './emulator.mjs'
 import { expect, test } from './fixtures.mjs'
-
-const { emulators } = JSON.parse(readFileSync('firebase.json', 'utf8'))
-const { projects } = JSON.parse(readFileSync('.firebaserc', 'utf8'))
 
 const FIRESTORE_URL = /google\.firestore\.v1\.Firestore/
 
@@ -14,20 +11,6 @@ const FIRESTORE_URL = /google\.firestore\.v1\.Firestore/
 const blockFirestore = (page, allowedConsoleErrors) => {
   allowedConsoleErrors.push(/google\.firestore\.v1\.Firestore\/(Listen|Write)\/channel/)
   return page.route(FIRESTORE_URL, (route) => route.abort())
-}
-
-// Writes a document straight into the emulator, bypassing the security rules (`Bearer owner`).
-// Returns the document id.
-async function seedDoc(collection, fields) {
-  const id = `e2e-${randomUUID()}`
-  const url = `http://localhost:${emulators.firestore.port}/v1/projects/${projects.dev}/databases/(default)/documents/${collection}?documentId=${id}`
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { Authorization: 'Bearer owner', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields }),
-  })
-  expect(response.ok, await response.text()).toBe(true)
-  return id
 }
 
 // Its `createdAt` keeps it behind the other news, so it never becomes the home page headline other tests may rely on.

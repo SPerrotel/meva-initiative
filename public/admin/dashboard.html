@@ -487,7 +487,7 @@
       getNews, saveNews, deleteNews, updateNews, 
       getStores, saveStore, deleteStore, updateStore, 
       getHomeConfig, saveHomeConfig, moveEventOrder, moveStoreOrder, 
-      getAssoConfig, saveAssoConfig, updateLocalEvent 
+      getAssoConfig, saveAssoConfig, updateLocalEvent, getServerDocs 
     } from "../store.js";
     import { db, auth } from "../firebase-config.js";
     import { 
@@ -745,11 +745,36 @@
       ]);
       populateStoreDropdown();
 
-      // AUTO-RÉPARATION FIRESTORE SILENCIEUSE
+      // AUTO-RÉPARATION FIRESTORE SILENCIEUSE : les tickets `registrations` sont la seule source de vérité des
+      // inscrits. Les joueurs ne peuvent pas écrire l'événement (règles), seul l'admin resynchronise
+      // `participants` (un uid par place, invités compris) et `count`, lus par les ligues et le repli hors ligne.
+      let ticketsByEvent = null;
+      try {
+        const regsSnap = await getServerDocs(collection(db, "registrations"));
+        ticketsByEvent = {};
+        regsSnap.docs.forEach(d => {
+          const data = d.data();
+          if (!data.eventId || !data.userId) return;
+          const seats = Number(data.seats) || 1;
+          for (let i = 0; i < seats; i++) (ticketsByEvent[data.eventId] ||= []).push(data.userId);
+        });
+      } catch (e) {
+        console.warn("Tickets illisibles, compteurs non resynchronisés :", e);
+      }
       for (const e of eventsList) {
-        if (typeof e.count === "number" && e.count < 0) {
+        if (ticketsByEvent) {
+          const participants = ticketsByEvent[e.id] || [];
+          const current = Array.isArray(e.participants) ? e.participants : [];
+          const inSync = e.count === participants.length && current.length === participants.length &&
+            [...current].sort().join() === [...participants].sort().join();
+          if (!inSync) {
+            e.participants = participants;
+            e.count = participants.length;
+            updateEvent(e.id, { participants, count: participants.length });
+          }
+        } else if (typeof e.count === "number" && e.count < 0) {
           e.count = 0; 
-          updateEvent(e.id, { count: 0 }).catch(() => {});
+          updateEvent(e.id, { count: 0 });
         }
       }
 
@@ -1017,33 +1042,27 @@
               
               if (!uidToAdd) return alert("Choisis un joueur dans la liste déroulante d'abord.");
               
-              // Lecture directe propre du tableau
-              let currentParts = Array.isArray(evt.participants) ? [...evt.participants] : [];
-              const isAlready = currentParts.some(p => {
-                 const id = typeof p === "string" ? p : (p.uid || p.id);
-                 return id === uidToAdd;
-              });
-
-              if (isAlready) return alert("Ce joueur est déjà inscrit à cet événement !");
+              // Les tickets font foi : un joueur désinscrit de lui-même peut figurer encore dans evt.participants
+              if (participantIds.includes(uidToAdd)) return alert("Ce joueur est déjà inscrit à cet événement !");
 
               btnAdd.disabled = true;
               btnAdd.textContent = "Inscription...";
 
               try {
-                currentParts.push(uidToAdd);
+                const currentParts = [...participantIds, uidToAdd];
 
-                // 1. Mise à jour de l'événement (pour le compteur et la liste)
-                await updateDoc(doc(db, "events", evt.id), {
-                  participants: currentParts,
-                  count: currentParts.length
-                });
-
-                // 2. Ticket officiel pour son Espace Joueur
+                // 1. Ticket officiel pour son Espace Joueur : c'est lui qui compte la place
                 await setDoc(doc(db, "registrations", `${evt.id}_${uidToAdd}`), {
                   eventId: evt.id,
                   userId: uidToAdd,
                   createdAt: new Date(),
                   addedByAdmin: true
+                });
+
+                // 2. Mise à jour de l'événement (pour le compteur et la liste)
+                await updateDoc(doc(db, "events", evt.id), {
+                  participants: currentParts,
+                  count: currentParts.length
                 });
 
                 evt.participants = currentParts;

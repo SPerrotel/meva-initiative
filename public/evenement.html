@@ -32,8 +32,9 @@
     import { db, auth } from "./firebase-config.js";
     import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
     import { 
-      collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, query, where 
+      collection, doc, getDoc, setDoc, deleteDoc, query, where 
     } from "/vendor/firebase/firebase-firestore.js";
+    import { getServerDocs } from "./store.js";
 
     const params = new URLSearchParams(window.location.search);
     let eventId = params.get("id") || localStorage.getItem("meva_current_event");
@@ -48,6 +49,10 @@
     let isRegistered = false;
     let myRegisteredSeats = 0;
     let publicPlayersList = [];
+    // Places réservées d'après les tickets `registrations`, seule source de vérité (null : tickets illisibles).
+    // Les joueurs ne peuvent pas écrire `participants`/`count` de l'événement : ces champs ne reflètent que
+    // les actions des admins.
+    let reservedSeats = null;
 
     function renderMemberRestricted() {
       if (badgeStatus) {
@@ -73,11 +78,13 @@
 
     async function loadPublicPlayersList() {
       publicPlayersList = [];
+      reservedSeats = null;
       if (!currentEvent) return;
       try {
         const q = query(collection(db, "registrations"), where("eventId", "==", currentEvent.id));
-        const snap = await getDocs(q);
-        
+        const snap = await getServerDocs(q);
+        reservedSeats = snap.docs.reduce((sum, d) => sum + (Number(d.data().seats) || 1), 0);
+
         for (const docSnap of snap.docs) {
           const regData = docSnap.data();
           const userSnap = await getDoc(doc(db, "users", regData.userId));
@@ -150,14 +157,10 @@
       try {
         const myTicketRef = doc(db, "registrations", `${currentEvent.id}_${currentUser.uid}`);
         const myTicketSnap = await getDoc(myTicketRef);
-        if (myTicketSnap.exists()) {
-          isRegistered = true;
-          myRegisteredSeats = myTicketSnap.data().seats || 1;
-        } else {
-          isRegistered = (currentEvent.participants || []).includes(currentUser.uid);
-          myRegisteredSeats = isRegistered ? 1 : 0;
-        }
+        isRegistered = myTicketSnap.exists();
+        myRegisteredSeats = isRegistered ? (Number(myTicketSnap.data().seats) || 1) : 0;
       } catch (e) {
+        // Ticket illisible : à défaut, la liste tenue par les admins
         isRegistered = (currentEvent.participants || []).includes(currentUser.uid);
         myRegisteredSeats = isRegistered ? 1 : 0;
       }
@@ -188,8 +191,7 @@
         return;
       }
 
-      const totalSeatsFromRegs = publicPlayersList.reduce((sum, p) => sum + (p.seats || 1), 0);
-      const count = Math.max(0, totalSeatsFromRegs, (currentEvent.participants || []).length);
+      const count = reservedSeats ?? (currentEvent.participants || []).length;
       const cap = currentEvent.capacity || 16;
       const pct = Math.min(100, Math.round((count / cap) * 100));
       const isFull = count >= cap;
@@ -332,26 +334,15 @@
             const uid = currentUser.uid;
             const regDocRef = doc(db, "registrations", `${targetEventId}_${uid}`);
 
-            let updatedParts = currentEvent.participants || [];
-
+            // Seul le ticket compte : les règles réservent l'écriture de l'événement aux admins
             if (isRegistered) {
               await deleteDoc(regDocRef);
-              updatedParts = updatedParts.filter(id => id !== uid);
-              
-              try {
-                await updateDoc(doc(db, "events", targetEventId), {
-                  participants: updatedParts,
-                  count: updatedParts.length
-                });
-              } catch (e) {}
-
-              currentEvent.participants = updatedParts;
               isRegistered = false;
               myRegisteredSeats = 0;
             } else {
               const seatSelect = document.getElementById("select-seats");
               const requestedSeats = seatSelect ? parseInt(seatSelect.value, 10) : 1;
-              const actualSeats = Math.min(requestedSeats, currentEvent.capacity - count);
+              const actualSeats = Math.min(requestedSeats, cap - count);
 
               if (actualSeats <= 0) {
                 alert("Désolé, il n'y a plus assez de places.");
@@ -367,18 +358,6 @@
                 guestsCount: actualSeats - 1
               });
 
-              for (let i = 0; i < actualSeats; i++) {
-                updatedParts.push(uid);
-              }
-
-              try {
-                await updateDoc(doc(db, "events", targetEventId), {
-                  participants: updatedParts,
-                  count: updatedParts.length
-                });
-              } catch (e) {}
-
-              currentEvent.participants = updatedParts;
               isRegistered = true;
               myRegisteredSeats = actualSeats;
             }
