@@ -92,6 +92,7 @@
 
   <script type="module">
     import { db, auth } from "./firebase-config.js";
+    import { updateLocalEvent } from "./store.js";
     import { onAuthStateChanged, signOut } from "/vendor/firebase/firebase-auth.js";
     import { 
       doc, getDoc, updateDoc, collection, query, where, getDocs, deleteDoc, increment 
@@ -200,18 +201,15 @@
                     let parts = Array.isArray(evData.participants) ? evData.participants : [];
                     parts = parts.filter(id => id !== uid);
                     
-                    await updateDoc(doc(db, "events", evId), {
-                      participants: parts,
-                      count: Math.max(0, parts.length)
-                    });
+                    const update = { participants: parts, count: Math.max(0, parts.length) };
+                    await updateDoc(doc(db, "events", evId), update);
+                    // Garde le nouveau total pour le repli hors ligne du calendrier et de l'accueil
+                    updateLocalEvent(evId, update);
                   }
                 } catch (e) {
                   console.warn("Mise à jour event échouée :", e);
                 }
               }
-
-              // 3. Vide le cache local pour forcer le calendrier à relire le nouveau total
-              localStorage.removeItem("meva_events");
 
               await loadUserTournaments(uid);
             } catch (err) {
