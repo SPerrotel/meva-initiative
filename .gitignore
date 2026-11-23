@@ -3,6 +3,7 @@ node_modules/
 *.json
 !package.json
 !package-lock.json
+!skills-lock.json
 ui-debug.log*
 npm-debug.log*
 public/css/style.css
@@ -15,3 +16,11 @@ firestore-debug.log*
 database-debug.log*
 public/firebase-config.generated.js
 public/vendor/
+
+# Agent skills (restored from skills-lock.json on npm install)
+.agents/
+.claude/skills/
+
+# Playwright
+test-results/
+playwright-report/

@@ -29,7 +29,9 @@ meva-initiative/
 ### Prérequis
 
 - [**fnm**](https://github.com/schniz/fnm) (Fast Node Manager) pour gérer la version de Node.js.
-- [Firebase CLI](https://firebase.google.com/docs/cli) (`npm install -g firebase-tools`) pour le serveur local et les émulateurs.
+- **Java 21+** (JRE) pour les émulateurs Firebase (exigence de `firebase-tools`).
+
+La [Firebase CLI](https://firebase.google.com/docs/cli) est installée automatiquement comme devDependency (version fixée) : pas d'installation globale. Les scripts npm l'utilisent directement ; pour une commande manuelle, utiliser `npx firebase <commande>` (ex. `npx firebase login`, `npx firebase deploy`).
 
 ### 1. Installer fnm
 
@@ -79,6 +81,9 @@ npm run preview     # build de production, puis Firebase Hosting en local (sans 
 
 npm run test:rules  # tests des règles de sécurité Firestore (tests/security/) ; démarre son propre émulateur Firestore
                     # (port de firebase.json) : arrêter `npm run dev` avant, sinon le port est occupé
+npm run test:e2e    # tests E2E Playwright (tests/e2e/) ; démarre hosting + auth + firestore + database en émulateur
+                    # (arrêter `npm run dev` avant) ; navigateurs : chromium, firefox, webkit + mobiles Pixel 7 (chromium)
+                    # et iPhone 15 (webkit) ; première fois : `npx playwright install chromium firefox webkit`
 ```
 
 ### Scripts npm
@@ -97,6 +102,16 @@ Convention : `verbe:cible`, le préfixe `dev:` désignant ce qui n'existe qu'en 
 | `dev:css` | Tailwind en mode watch (`--watch=always`, pour ne pas s'arrêter quand l'entrée standard est fermée) |
 | `dev:emulators` | émulateurs Firebase, projet `dev` (alias de `.firebaserc`) |
 | `preview` | `build` puis `firebase serve --only hosting` |
+| `test:e2e` | `dev:config`, `build:sdk`, `build:css`, puis `test:e2e:run` |
+| `test:e2e:run` | `playwright test` encapsulé dans `firebase emulators:exec` (hosting, auth, firestore, database ; le site utilise aussi la Realtime Database) |
+| `skills:install` | restaure les skills d'agents IA (Playwright, Firebase) depuis `skills-lock.json` via le CLI [`skills`](https://www.npmjs.com/package/skills) épinglé ; lancé par `postinstall`, ignoré en CI (`CI`) ou avec `SKIP_SKILLS=1` |
+| `skills:update` | (re)télécharge les skills listés dans `scripts/install-skills.mjs` et met à jour `skills-lock.json` (à committer) |
+
+Les skills sont installés dans `.agents/skills/` (avec des liens symboliques pour Claude Code dans `.claude/skills/`), ces dossiers sont ignorés par git : seul `skills-lock.json` est versionné.
+
+### Intégration continue
+
+[`.github/workflows/tests.yml`](.github/workflows/tests.yml) (GitHub Actions, sur toutes les PR, quelle que soit leur branche de base, et sur les pushs vers `main`) lance deux jobs en parallèle : `test:rules` (règles Firestore) et `test:e2e` (Playwright sur 5 profils de navigateur, rapport HTML en artefact). Les émulateurs Firebase nécessitent Java 21+ (Temurin 21 en CI) ; `firebase-tools` vient de `npm ci` (devDependency).
 
 ### Configuration Firebase (fichiers `.env`)
 
@@ -120,7 +135,7 @@ Ces valeurs sont publiques (config web Firebase) : elles servent à changer d'en
 - **Clés restantes** : `FIREBASE_API_KEY` et `FIREBASE_APP_ID` (obligatoires), `FIREBASE_MEASUREMENT_ID` (optionnelle, ignorée si vide), `FIREBASE_DATABASE_REGION`.
 - `FIREBASE_USE_EMULATORS=true` (`.env.dev`) active la connexion du site aux émulateurs ; `FIREBASE_EMULATOR_HOST` définit l'hôte (défaut `localhost`).
 
-`npm run preview` et `firebase deploy` (hook `predeploy`) régénèrent toujours la config de **prod** (via `npm run build`).
+`npm run preview` et `npx firebase deploy` (hook `predeploy`) régénèrent toujours la config de **prod** (via `npm run build`).
 
 ### SDK Firebase (bundle esbuild)
 
