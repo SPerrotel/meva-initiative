@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion — MEVA Initiative</title>
   <link rel="icon" type="image/png" href="/assets/images/meva_initiative_logo_logo.png">
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="bg-meva-bg text-meva-textMain min-h-screen flex flex-col font-sans antialiased selection:bg-meva-accent selection:text-meva-bg">
 
-  <main class="flex-grow flex items-center justify-center px-4 py-12">
+  <main class="grow flex items-center justify-center px-4 py-12">
     <div class="w-full max-w-md bg-meva-surface border border-meva-border p-8 rounded-2xl chamfered-card space-y-6">
       
       <div class="text-center space-y-2">
@@ -41,12 +40,12 @@
       <form id="auth-form" class="space-y-4">
         <div id="field-pseudo" class="hidden space-y-1">
           <label class="text-xs text-meva-textMuted">Pseudo joueur</label>
-          <input type="text" id="input-pseudo" placeholder="Ex: Wedge74" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+          <input type="text" id="input-pseudo" placeholder="Ex: Wedge74" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-hidden">
         </div>
 
         <div class="space-y-1">
           <label class="text-xs text-meva-textMuted">Adresse email</label>
-          <input type="email" id="input-email" required placeholder="nom@exemple.fr" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+          <input type="email" id="input-email" required placeholder="nom@exemple.fr" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-hidden">
         </div>
 
         <div class="space-y-1">
@@ -54,7 +53,7 @@
             <label class="text-xs text-meva-textMuted">Mot de passe</label>
             <button type="button" id="btn-forgot-password" class="text-[10px] text-meva-accent hover:underline">Mot de passe oublié ?</button>
           </div>
-          <input type="password" id="input-password" required placeholder="••••••••" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+          <input type="password" id="input-password" required placeholder="••••••••" class="w-full bg-meva-bg border border-meva-border focus:border-meva-accent rounded-lg px-3 py-2 text-sm text-white focus:outline-hidden">
         </div>
 
         <button type="submit" id="btn-submit" class="w-full py-2.5 bg-meva-accent hover:bg-meva-accentHover text-meva-bg font-semibold rounded-lg text-sm transition-colors">
@@ -78,8 +77,8 @@
       signInWithPopup, GoogleAuthProvider, 
       signInWithEmailAndPassword, createUserWithEmailAndPassword, 
       sendPasswordResetEmail, onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    } from "/vendor/firebase/firebase-auth.js";
+    import { doc, getDoc, setDoc } from "/vendor/firebase/firebase-firestore.js";
 
     const form = document.getElementById("auth-form");
     const toggleBtn = document.getElementById("btn-toggle-mode");

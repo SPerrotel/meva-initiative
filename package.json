@@ -2,18 +2,31 @@
   "name": "meva-initiative",
   "version": "1.0.0",
   "description": "Portail officiel MEVA Initiative - Star Wars: Unlimited",
+  "engines": {
+    "node": ">=26.13.1"
+  },
   "scripts": {
-    "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
+    "build": "run-s build:*",
+    "build:config": "node --env-file=.env --env-file-if-exists=.env.local scripts/generate-firebase-config.mjs",
+    "build:sdk": "node scripts/build-firebase.mjs",
     "build:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --minify",
-    "serve": "firebase serve --only hosting",
-    "test:rules": "firebase emulators:exec --only firestore \"npx jest tests/security/security.test.js --runInBand\""
+    "dev": "run-s dev:config build:sdk build:css dev:serve",
+    "dev:config": "node --env-file=.env --env-file=.env.dev --env-file-if-exists=.env.local scripts/generate-firebase-config.mjs",
+    "dev:serve": "run-p --race dev:css dev:emulators",
+    "dev:css": "tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch=always",
+    "dev:emulators": "firebase emulators:start --project dev",
+    "preview": "npm run build && firebase serve --only hosting",
+    "test:rules": "firebase emulators:exec --only firestore --project dev \"jest tests/security/security.test.js --runInBand\""
   },
   "dependencies": {
-    "firebase": "^10.8.0"
+    "firebase": "13.4.0"
   },
   "devDependencies": {
-    "@firebase/rules-unit-testing": "^3.0.1",
-    "jest": "^29.7.0",
-    "tailwindcss": "^3.4.1"
+    "@firebase/rules-unit-testing": "6.0.0",
+    "@tailwindcss/cli": "4.3.5",
+    "esbuild": "0.28.2",
+    "jest": "30.5.2",
+    "npm-run-all2": "9.1.0",
+    "tailwindcss": "4.3.5"
   }
 }
