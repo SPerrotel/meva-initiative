@@ -1,8 +1,8 @@
 // Firestore unreachable (e.g. a tab resumed on mobile while the network wakes up): getDocs then answers at once
 // from the empty memory cache instead of failing. Pages must fall back to the local copy instead of hanging.
 import { randomUUID } from 'node:crypto'
-import { logout, newUser, register } from './auth.mjs'
-import { seedDoc } from './emulator.mjs'
+import { newUser, register, registerUser } from './auth.mjs'
+import { patchDoc, seedDoc } from './emulator.mjs'
 import { expect, test } from './fixtures.mjs'
 
 const FIRESTORE_URL = /google\.firestore\.v1\.Firestore/
@@ -91,11 +91,42 @@ test('calendar still falls back to the last events read after unregistering from
   page.once('dialog', (dialog) => dialog.accept())
   await page.locator(`.btn-cancel-reg[data-eventid="${eventId}"]`).click()
   await expect(page.locator(`.btn-cancel-reg[data-eventid="${eventId}"]`)).toHaveCount(0)
-  // Signed in, the navbar's user profile read fails without Firestore: not what this test is about.
-  await logout(page)
 
   await blockFirestore(page, allowedConsoleErrors)
   await page.goto('/calendrier')
 
   await expect(page.locator('#events-list')).toContainText(title)
+})
+
+test('navbar keeps the last roles read and sets the presence status when Firestore becomes unreachable', async ({ page, allowedConsoleErrors }) => {
+  const uid = await registerUser(page)
+  await patchDoc(`users/${uid}`, { roles: { mapValue: { fields: { member: { booleanValue: true }, admin: { booleanValue: false } } } } })
+
+  // Online, the navbar reads the roles and keeps them for the next pages.
+  await page.goto('/')
+  await expect(page.locator('#nav-member-badge')).not.toHaveClass(/hidden/)
+
+  // Clear the presence status, so that only the next page can set it back online.
+  await page.evaluate(async (uid) => {
+    const { rtdb } = await import('/firebase-config.js')
+    const { ref, onDisconnect, set } = await import('/vendor/firebase/firebase-database.js')
+    const myStatusRef = ref(rtdb, `/status/${uid}`)
+    await onDisconnect(myStatusRef).cancel()
+    await set(myStatusRef, null)
+  }, uid)
+
+  await blockFirestore(page, allowedConsoleErrors)
+  await page.reload()
+
+  await expect(page.locator('#nav-member-badge')).not.toHaveClass(/hidden/)
+  await expect(page.locator('#nav-auth-btn')).toHaveAttribute('href', '/profil.html')
+  await expect
+    .poll(() =>
+      page.evaluate(async (uid) => {
+        const { rtdb } = await import('/firebase-config.js')
+        const { ref, get } = await import('/vendor/firebase/firebase-database.js')
+        return (await get(ref(rtdb, `/status/${uid}`))).val()?.online
+      }, uid),
+    )
+    .toBe(true)
 })
