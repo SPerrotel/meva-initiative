@@ -26,6 +26,7 @@ test('home page renders without Firestore on a first visit', async ({ page, allo
   await page.goto('/')
 
   await expect(page.locator('#home-calendar-days')).not.toBeEmpty()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('La communauté Star Wars: Unlimited')
   await expect(page.locator('#stores-grid')).not.toBeEmpty()
   await expect(page.locator('#news-grid')).not.toBeEmpty()
 })
