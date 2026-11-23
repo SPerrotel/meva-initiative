@@ -111,7 +111,7 @@
   </footer>
 
   <script type="module">
-    import { getEvents, getNews, getStores } from "./store.js";
+    import { getEvents, getNews, getStores, refreshOnReconnect } from "./store.js";
     import { db, auth } from "./firebase-config.js";
     import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
     import { doc, getDoc } from "/vendor/firebase/firebase-firestore.js";
@@ -311,18 +311,10 @@
       ]);
       
       cachedStores = allStores || [];
+      homeEvents = allEvents || [];
       
       // --- CALENDRIER ACCUEIL ---
-      document.getElementById("home-prev-month")?.addEventListener("click", () => {
-        displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() - 1, 1);
-        renderHomeCalendar(allEvents || []);
-      });
-      document.getElementById("home-next-month")?.addEventListener("click", () => {
-        displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() + 1, 1);
-        renderHomeCalendar(allEvents || []);
-      });
-
-      renderHomeCalendar(allEvents || []);
+      renderHomeCalendar(homeEvents);
       
       // --- FILTRES LÉGENDE (Génération dynamique) ---
       const legendContainer = document.getElementById("home-store-legend");
@@ -469,6 +461,18 @@
       }
     }
 
+    // Écouteurs posés une seule fois : initHomePage est relancée au retour du réseau.
+    let homeEvents = [];
+    document.getElementById("home-prev-month")?.addEventListener("click", () => {
+      displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() - 1, 1);
+      renderHomeCalendar(homeEvents);
+    });
+    document.getElementById("home-next-month")?.addEventListener("click", () => {
+      displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() + 1, 1);
+      renderHomeCalendar(homeEvents);
+    });
+
+    refreshOnReconnect(initHomePage);
     initHomePage();
 
     const btnMenu = document.getElementById("btn-mobile-menu");

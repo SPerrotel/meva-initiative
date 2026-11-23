@@ -89,7 +89,7 @@
   </footer>
 
   <script type="module">
-    import { getEvents, getStores } from "./store.js";
+    import { getEvents, getStores, refreshOnReconnect } from "./store.js";
     import { db, auth } from "./firebase-config.js";
     import { collection, query, where, getDocs } from "/vendor/firebase/firebase-firestore.js";
     import { onAuthStateChanged } from "/vendor/firebase/firebase-auth.js";
@@ -451,6 +451,9 @@
         storeSelect.innerHTML =
           `<option value="all">Toutes les boutiques</option>` +
           locations.map(location => `<option value="${location}">${location}</option>`).join("");
+        // Garde le filtre choisi quand la page est rechargée au retour du réseau
+        if (locations.includes(currentStoreFilter)) storeSelect.value = currentStoreFilter;
+        else currentStoreFilter = "all";
 
         renderStoreLegend();
         renderCalendar();
@@ -511,6 +514,7 @@
       renderList();
     });
 
+    refreshOnReconnect(initCalendar);
     initCalendar();
   </script>
 

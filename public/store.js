@@ -13,7 +13,8 @@ import {
   updateDoc, 
   deleteDoc, 
   query, 
-  orderBy 
+  orderBy,
+  onSnapshot
 } from "./firebase-config.js";
 
 /* ============================================================================
@@ -219,9 +220,60 @@ export const DEFAULT_ASSO_CONFIG = {
 // la collection vide.
 async function getServerDocs(ref) {
   const snap = await getDocs(ref);
-  if (snap.metadata.fromCache) throw new Error("Firestore injoignable (résultat issu du cache)");
+  if (snap.metadata.fromCache) {
+    const err = new Error("Firestore injoignable (résultat issu du cache)");
+    err.code = "unavailable";
+    throw err;
+  }
   return snap;
 }
+
+// Rafraîchissement au retour du réseau. Après un repli sur la copie localStorage, les pages enregistrées
+// via refreshOnReconnect sont relancées dès que Firestore répond de nouveau : un écouteur onSnapshot suit
+// la reconnexion que le SDK gère lui-même (nouvelles tentatives, événement `online`). Seules les erreurs
+// "unavailable" déclenchent cette surveillance, pour ne pas boucler sur une erreur durable (droits refusés).
+const refreshCallbacks = new Set();
+let stopReconnectWatch = null;
+
+export function refreshOnReconnect(callback) {
+  refreshCallbacks.add(callback);
+}
+
+function runRefreshCallbacks() {
+  refreshCallbacks.forEach(callback => {
+    Promise.resolve()
+      .then(callback)
+      .catch(err => console.error("Rafraîchissement de la page impossible :", err));
+  });
+}
+
+function stopWatchingReconnect() {
+  if (stopReconnectWatch) stopReconnectWatch();
+  stopReconnectWatch = null;
+}
+
+function watchForReconnect(ref, err) {
+  if (err?.code !== "unavailable" || stopReconnectWatch) return;
+  stopReconnectWatch = onSnapshot(
+    ref,
+    { includeMetadataChanges: true },
+    snap => {
+      if (snap.metadata.fromCache) return;
+      stopWatchingReconnect();
+      runRefreshCallbacks();
+    },
+    watchErr => {
+      console.warn("Surveillance de la reconnexion Firestore interrompue :", watchErr);
+      stopReconnectWatch = null;
+    }
+  );
+}
+
+// Page restaurée depuis le cache de navigation (onglet rouvert, retour arrière) : son contenu date du moment
+// où elle a été quittée, on recharge les données.
+window.addEventListener("pageshow", event => {
+  if (event.persisted) runRefreshCallbacks();
+});
 
 // Initialise une collection vide avec les données par défaut, sans bloquer l'affichage : les écritures
 // sont réservées aux admins et, hors ligne, elles restent en file d'attente jusqu'au retour du réseau.
@@ -245,6 +297,7 @@ export async function getEvents() {
     return [];
   } catch (err) {
     console.warn("Firestore offline ou erreur, fallback sur le cache local:", err);
+    watchForReconnect(collection(db, "events"), err);
     const local = localStorage.getItem("meva_events");
     return local ? JSON.parse(local) : [];
   }
@@ -369,6 +422,7 @@ export async function getNews() {
     return DEFAULT_NEWS;
   } catch (err) {
     console.warn("Firestore offline news fallback:", err);
+    watchForReconnect(collection(db, "news"), err);
     const local = localStorage.getItem("meva_news");
     return local ? JSON.parse(local) : DEFAULT_NEWS;
   }
@@ -416,8 +470,8 @@ export async function updateNews(id, updatedData) {
    ============================================================================ */
 
 export async function getStores() {
+  const q = query(collection(db, "stores"), orderBy("order", "asc"));
   try {
-    const q = query(collection(db, "stores"), orderBy("order", "asc"));
     const snap = await getServerDocs(q);
     if (!snap.empty) {
       const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -429,6 +483,7 @@ export async function getStores() {
     return DEFAULT_STORES;
   } catch (err) {
     console.warn("Firestore offline stores fallback:", err);
+    watchForReconnect(q, err);
     const local = localStorage.getItem("meva_stores");
     return local ? JSON.parse(local) : DEFAULT_STORES;
   }
@@ -509,6 +564,7 @@ export async function getHomeConfig() {
     localStorage.setItem("meva_home_config", JSON.stringify(DEFAULT_HOME_CONFIG));
     return DEFAULT_HOME_CONFIG;
   } catch (e) {
+    watchForReconnect(doc(db, "config", "home"), e);
     const local = localStorage.getItem("meva_home_config");
     return local ? JSON.parse(local) : DEFAULT_HOME_CONFIG;
   }
@@ -537,6 +593,7 @@ export async function getAssoConfig() {
     localStorage.setItem("meva_asso_config", JSON.stringify(DEFAULT_ASSO_CONFIG));
     return DEFAULT_ASSO_CONFIG;
   } catch (e) {
+    watchForReconnect(doc(db, "config", "asso"), e);
     const local = localStorage.getItem("meva_asso_config");
     return local ? JSON.parse(local) : DEFAULT_ASSO_CONFIG;
   }
