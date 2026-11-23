@@ -552,60 +552,54 @@ export async function moveStoreOrder(id, direction) {
    7. FONCTIONS CRUD FIRESTORE : CONFIGURATION GLOBALE
    ============================================================================ */
 
-export async function getHomeConfig() {
+// Chaque configuration est un document unique de sa propre collection, comme le prévoient firestore.rules.
+const HOME_CONFIG = { collection: "config_home", id: "home", cacheKey: "meva_home_config", defaults: DEFAULT_HOME_CONFIG };
+const ASSO_CONFIG = { collection: "config_asso", id: "asso", cacheKey: "meva_asso_config", defaults: DEFAULT_ASSO_CONFIG };
+
+async function getConfig({ collection: collectionName, id, cacheKey, defaults }) {
+  const ref = doc(db, collectionName, id);
   try {
-    const snap = await getDoc(doc(db, "config", "home"));
+    const snap = await getDoc(ref);
     if (snap.exists()) {
       const data = snap.data();
-      localStorage.setItem("meva_home_config", JSON.stringify(data));
+      localStorage.setItem(cacheKey, JSON.stringify(data));
       return data;
     }
-    await setDoc(doc(db, "config", "home"), DEFAULT_HOME_CONFIG);
-    localStorage.setItem("meva_home_config", JSON.stringify(DEFAULT_HOME_CONFIG));
-    return DEFAULT_HOME_CONFIG;
-  } catch (e) {
-    watchForReconnect(doc(db, "config", "home"), e);
-    const local = localStorage.getItem("meva_home_config");
-    return local ? JSON.parse(local) : DEFAULT_HOME_CONFIG;
+    // Document absent : on l'initialise sans bloquer l'affichage (écriture réservée aux admins).
+    setDoc(ref, defaults)
+      .catch(err => console.warn(`Initialisation de "${collectionName}/${id}" impossible :`, err));
+    localStorage.setItem(cacheKey, JSON.stringify(defaults));
+    return defaults;
+  } catch (err) {
+    console.warn(`Firestore offline ${collectionName} fallback:`, err);
+    watchForReconnect(ref, err);
+    const local = localStorage.getItem(cacheKey);
+    return local ? JSON.parse(local) : defaults;
   }
 }
 
-export async function saveHomeConfig(config) {
-  const current = await getHomeConfig();
+// L'enregistrement rejette si Firestore le refuse : la copie localStorage n'est mise à jour qu'après
+// un succès, pour que l'admin ne croie pas enregistrée une modification qui ne l'est pas.
+async function saveConfig(target, config) {
+  const current = await getConfig(target);
   const updated = { ...current, ...config };
-  try {
-    await setDoc(doc(db, "config", "home"), updated, { merge: true });
-  } catch (e) {
-    console.error("Erreur saveHomeConfig Firestore:", e);
-  }
-  localStorage.setItem("meva_home_config", JSON.stringify(updated));
+  await setDoc(doc(db, target.collection, target.id), updated, { merge: true });
+  localStorage.setItem(target.cacheKey, JSON.stringify(updated));
+  return updated;
 }
 
-export async function getAssoConfig() {
-  try {
-    const snap = await getDoc(doc(db, "config", "asso"));
-    if (snap.exists()) {
-      const data = snap.data();
-      localStorage.setItem("meva_asso_config", JSON.stringify(data));
-      return data;
-    }
-    await setDoc(doc(db, "config", "asso"), DEFAULT_ASSO_CONFIG);
-    localStorage.setItem("meva_asso_config", JSON.stringify(DEFAULT_ASSO_CONFIG));
-    return DEFAULT_ASSO_CONFIG;
-  } catch (e) {
-    watchForReconnect(doc(db, "config", "asso"), e);
-    const local = localStorage.getItem("meva_asso_config");
-    return local ? JSON.parse(local) : DEFAULT_ASSO_CONFIG;
-  }
+export function getHomeConfig() {
+  return getConfig(HOME_CONFIG);
 }
 
-export async function saveAssoConfig(config) {
-  const current = await getAssoConfig();
-  const updated = { ...current, ...config };
-  try {
-    await setDoc(doc(db, "config", "asso"), updated, { merge: true });
-  } catch (e) {
-    console.error("Erreur saveAssoConfig Firestore:", e);
-  }
-  localStorage.setItem("meva_asso_config", JSON.stringify(updated));
+export function saveHomeConfig(config) {
+  return saveConfig(HOME_CONFIG, config);
+}
+
+export function getAssoConfig() {
+  return getConfig(ASSO_CONFIG);
+}
+
+export function saveAssoConfig(config) {
+  return saveConfig(ASSO_CONFIG, config);
 }
