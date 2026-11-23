@@ -15,11 +15,9 @@ const blockFirestore = (page, allowedConsoleErrors) => {
   return page.route(FIRESTORE_URL, (route) => route.abort())
 }
 
-// Writes a news item straight into the emulator, bypassing the security rules (`Bearer owner`). Its `createdAt`
-// keeps it behind the other news, so it never becomes the home page headline other tests may rely on.
-async function seedNews(title) {
-  const url = `http://localhost:${emulators.firestore.port}/v1/projects/${projects.dev}/databases/(default)/documents/news?documentId=e2e-${randomUUID()}`
-  const fields = { title: { stringValue: title }, content: { stringValue: 'Article de test.' }, createdAt: { integerValue: '0' } }
+// Writes a document straight into the emulator, bypassing the security rules (`Bearer owner`).
+async function seedDoc(collection, fields) {
+  const url = `http://localhost:${emulators.firestore.port}/v1/projects/${projects.dev}/databases/(default)/documents/${collection}?documentId=e2e-${randomUUID()}`
   const response = await fetch(url, {
     method: 'POST',
     headers: { Authorization: 'Bearer owner', 'Content-Type': 'application/json' },
@@ -27,6 +25,14 @@ async function seedNews(title) {
   })
   expect(response.ok, await response.text()).toBe(true)
 }
+
+// Its `createdAt` keeps it behind the other news, so it never becomes the home page headline other tests may rely on.
+const seedNews = (title) =>
+  seedDoc('news', { title: { stringValue: title }, content: { stringValue: 'Article de test.' }, createdAt: { integerValue: '0' } })
+
+// Far in the future, so it never shows up in the months other tests display.
+const seedEvent = (title) =>
+  seedDoc('events', { title: { stringValue: title }, location: { stringValue: 'MEVA' }, startDate: { stringValue: '2099-12-31' } })
 
 test('home page renders without Firestore on a first visit', async ({ page, allowedConsoleErrors }) => {
   await blockFirestore(page, allowedConsoleErrors)
@@ -66,4 +72,16 @@ test('news page refreshes once Firestore is reachable again', async ({ page, all
   await page.context().setOffline(false)
 
   await expect(page.locator('#news-page-grid')).toContainText(title, { timeout: 15_000 })
+})
+
+test('calendar falls back to the last events read when Firestore becomes unreachable', async ({ page, allowedConsoleErrors }) => {
+  const title = `Tournoi e2e ${randomUUID()}`
+  await seedEvent(title)
+  await page.goto('/calendrier')
+  await expect(page.locator('#events-list')).toContainText(title)
+
+  await blockFirestore(page, allowedConsoleErrors)
+  await page.reload()
+
+  await expect(page.locator('#events-list')).toContainText(title)
 })
