@@ -213,9 +213,26 @@ export const DEFAULT_ASSO_CONFIG = {
    4. FONCTIONS CRUD FIRESTORE : ÉVÉNEMENTS (EVENTS)
    ============================================================================ */
 
+// Lecture d'une collection depuis le serveur. Quand Firestore est injoignable (onglet rouvert sur mobile,
+// réseau qui se réveille), getDocs ne rejette pas : il répond aussitôt depuis le cache mémoire, vide.
+// On le traite comme une erreur pour que l'appelant retombe sur la copie localStorage au lieu de croire
+// la collection vide.
+async function getServerDocs(ref) {
+  const snap = await getDocs(ref);
+  if (snap.metadata.fromCache) throw new Error("Firestore injoignable (résultat issu du cache)");
+  return snap;
+}
+
+// Initialise une collection vide avec les données par défaut, sans bloquer l'affichage : les écritures
+// sont réservées aux admins et, hors ligne, elles restent en file d'attente jusqu'au retour du réseau.
+function seedDefaults(collectionName, items) {
+  Promise.all(items.map(item => setDoc(doc(db, collectionName, item.id), item)))
+    .catch(err => console.warn(`Initialisation de "${collectionName}" impossible :`, err));
+}
+
 export async function getEvents() {
   try {
-    const snap = await getDocs(collection(db, "events"));
+    const snap = await getServerDocs(collection(db, "events"));
     if (!snap.empty) {
       const list = snap.docs.map(d => ({
         ...d.data(),
@@ -341,15 +358,13 @@ export async function moveEventOrder(id, direction) {
 
 export async function getNews() {
   try {
-    const snap = await getDocs(collection(db, "news"));
+    const snap = await getServerDocs(collection(db, "news"));
     if (!snap.empty) {
       const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       localStorage.setItem("meva_news", JSON.stringify(list));
       return list;
     }
-    for (const item of DEFAULT_NEWS) {
-      await setDoc(doc(db, "news", item.id), item);
-    }
+    seedDefaults("news", DEFAULT_NEWS);
     localStorage.setItem("meva_news", JSON.stringify(DEFAULT_NEWS));
     return DEFAULT_NEWS;
   } catch (err) {
@@ -403,15 +418,13 @@ export async function updateNews(id, updatedData) {
 export async function getStores() {
   try {
     const q = query(collection(db, "stores"), orderBy("order", "asc"));
-    const snap = await getDocs(q);
+    const snap = await getServerDocs(q);
     if (!snap.empty) {
       const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       localStorage.setItem("meva_stores", JSON.stringify(list));
       return list;
     }
-    for (const store of DEFAULT_STORES) {
-      await setDoc(doc(db, "stores", store.id), store);
-    }
+    seedDefaults("stores", DEFAULT_STORES);
     localStorage.setItem("meva_stores", JSON.stringify(DEFAULT_STORES));
     return DEFAULT_STORES;
   } catch (err) {
